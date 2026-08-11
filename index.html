@@ -192,12 +192,6 @@
     0%, 100% { opacity: 0.7; }
     50% { opacity: 1; }
   }
-  .btn-text.cover-help-link {
-    margin-top: 22px;
-    color: rgba(236,229,216,0.5);
-    text-decoration-color: rgba(236,229,216,0.3);
-  }
-
   /* ---------- HELP SCREEN ---------- */
   #screen-help {
     justify-content: flex-start;
@@ -374,6 +368,84 @@
     transition: transform 0.1s, background 0.15s;
   }
   .btn-secondary:active { transform: scale(0.98); background: rgba(26,20,16,0.06); }
+
+  .btn-compact {
+    width: auto;
+    padding: 12px 26px;
+    border-radius: 4px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: transform 0.1s, background 0.15s, opacity 0.15s;
+  }
+  .btn-compact:active { transform: scale(0.96); background: rgba(26,20,16,0.06); opacity: 1; }
+
+  .btn-compact-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .btn-compact-row .btn-compact {
+    flex: 1;
+    padding: 12px 10px;
+  }
+
+  .btn-compact-dark {
+    width: auto;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(236,229,216,0.35);
+    background: transparent;
+    color: rgba(236,229,216,0.75);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 22px;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-compact-dark:active { transform: scale(0.96); background: rgba(236,229,216,0.08); }
+
+  .btn-primary-dark {
+    width: 100%;
+    padding: 18px;
+    border-radius: 4px;
+    border: none;
+    background: var(--lacre-bright);
+    color: var(--paper);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(178,60,38,0.35);
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-primary-dark:active { transform: scale(0.98); }
+
+  .btn-secondary-dark {
+    width: 100%;
+    padding: 16px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(236,229,216,0.5);
+    background: transparent;
+    color: var(--paper);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-secondary-dark:active { transform: scale(0.98); background: rgba(236,229,216,0.08); }
 
   .btn-text {
     background: none;
@@ -705,17 +777,6 @@
     min-width: 30px;
     text-align: right;
   }
-  .winner-badge {
-    display: inline-block;
-    margin-top: 4px;
-    padding: 14px 20px;
-    background: var(--lacre);
-    color: var(--paper);
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-  }
   .result-buttons {
     width: 100%;
     display: flex;
@@ -761,17 +822,6 @@
     text-transform: uppercase;
     color: rgba(236,229,216,0.45);
     margin-bottom: 10px;
-  }
-
-  .credits-winner {
-    font-size: 30px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .credits-winner-sub {
-    font-size: 14px;
-    color: rgba(236,229,216,0.55);
-    margin-bottom: 46px;
   }
 
   .credits-block {
@@ -899,9 +949,9 @@
   }
   .cat-quick-actions {
     display: flex;
-    gap: 16px;
+    gap: 10px;
     justify-content: center;
-    margin-bottom: 4px;
+    margin-bottom: 16px;
   }
 
   /* ---------- PASS SCREEN (traspaso protegido, sin máster) ---------- */
@@ -936,6 +986,52 @@
     color: rgba(236,229,216,0.55);
   }
 
+  /* ---------- VICTORY SCREEN (fin del juego completo) ---------- */
+  #screen-victory {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 25%, rgba(140,47,29,0.22), transparent 60%),
+      var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .victory-eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.5);
+    margin-bottom: 26px;
+  }
+  .victory-trophy {
+    font-size: 72px;
+    margin-bottom: 24px;
+    animation: coverPulse 2.4s ease-in-out infinite;
+  }
+  .victory-name {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .victory-sub {
+    font-size: 16px;
+    color: rgba(236,229,216,0.6);
+    max-width: 300px;
+    line-height: 1.5;
+    margin-bottom: 50px;
+  }
+  .victory-tap {
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.4);
+    animation: coverFlicker 2.6s ease-in-out infinite;
+  }
+
   .footer-note {
     text-align: center;
     font-family: 'Courier New', monospace;
@@ -962,7 +1058,7 @@
     <h1 class="cover-title">DESCUBRE<br>AL <em>ESPÍA</em></h1>
     <p class="cover-tagline">Uno no sabe la palabra. Dos la conocen a medias. El resto guarda el mismo secreto. Descubrid quién miente antes de que sea tarde.</p>
     <button class="cover-cta" id="btn-cover-play">Toca para abrir el expediente</button>
-    <button class="btn-text cover-help-link" id="btn-cover-help">Cómo se juega</button>
+    <button class="btn-compact-dark" id="btn-cover-help">Cómo se juega</button>
   </div>
 
   <!-- ============ HELP SCREEN ============ -->
@@ -1012,6 +1108,8 @@
       <div class="mode-card-title">Sin máster</div>
       <div class="mode-card-desc">El móvil se pasa de mano en mano. Entre cada jugador aparece una pantalla de seguridad para que nadie vea la palabra ajena durante el traspaso. Todos juegan.</div>
     </button>
+
+    <div class="link-under"><button class="btn-compact" id="btn-back-cover">Volver</button></div>
   </div>
 
   <!-- ============ SETUP SCREEN ============ -->
@@ -1040,6 +1138,7 @@
     <div class="min-warning" id="score-warning"></div>
 
     <button class="btn-primary" id="btn-goto-categories">Continuar</button>
+    <div class="link-under"><button class="btn-compact" id="btn-back-mode">Volver</button></div>
   </div>
 
   <!-- ============ CATEGORIES SCREEN ============ -->
@@ -1049,15 +1148,15 @@
     <p class="subtitle" style="margin-bottom:4px;">Selecciona una o varias. Las palabras de la partida saldrán solo de aquí.</p>
 
     <div class="cat-quick-actions">
-      <button class="btn-text" id="btn-cat-all">Marcar todas</button>
-      <button class="btn-text" id="btn-cat-none">Desmarcar todas</button>
+      <button class="btn-compact" id="btn-cat-all">Marcar todas</button>
+      <button class="btn-compact" id="btn-cat-none">Desmarcar todas</button>
     </div>
 
     <div class="cat-list" id="cat-list"></div>
     <div class="cat-warning" id="cat-warning"></div>
 
     <button class="btn-primary" id="btn-goto-names">Continuar</button>
-    <div class="link-under"><button class="btn-text" id="btn-back-setup-from-cat">Volver</button></div>
+    <div class="link-under"><button class="btn-compact" id="btn-back-setup-from-cat">Volver</button></div>
   </div>
 
   <!-- ============ NAMES SCREEN ============ -->
@@ -1069,7 +1168,7 @@
     <div class="names-list" id="names-list"></div>
 
     <button class="btn-primary" id="btn-start">Comenzar partida</button>
-    <div class="link-under"><button class="btn-text" id="btn-back-setup">Volver</button></div>
+    <div class="link-under"><button class="btn-compact" id="btn-back-setup">Volver</button></div>
   </div>
 
   <!-- ============ PASS SCREEN (traspaso protegido) ============ -->
@@ -1120,24 +1219,25 @@
 
     <div class="points-list" id="points-list"></div>
 
-    <div id="game-winner-box" class="hidden" style="margin-top:22px;">
-      <div class="winner-badge" id="winner-badge">🏆 Jugador 1 gana el juego con 10 puntos</div>
-    </div>
-
     <div class="result-buttons">
       <button class="btn-primary" id="btn-next-match">Siguiente partida · mismo grupo</button>
       <button class="btn-secondary" id="btn-full-reset">Nuevo grupo desde cero</button>
     </div>
   </div>
 
+  <!-- ============ VICTORY SCREEN (fin del juego completo) ============ -->
+  <div class="screen hidden" id="screen-victory">
+    <div class="victory-eyebrow">Fin del juego</div>
+    <div class="victory-trophy">🏆</div>
+    <div class="victory-name" id="victory-name">Jugador 1</div>
+    <div class="victory-sub" id="victory-sub">ha alcanzado 13 puntos y gana la partida</div>
+    <div class="victory-tap">Toca para continuar</div>
+  </div>
+
   <!-- ============ CREDITS SCREEN ============ -->
   <div class="screen hidden" id="screen-credits">
     <div class="credits-eyebrow">Fin del expediente</div>
-    <div class="credits-seal"><span class="credits-seal-mark">🏆</span></div>
-    <div class="credits-winner" id="credits-winner">Jugador 1</div>
-    <div class="credits-winner-sub" id="credits-winner-sub">ha ganado la partida</div>
-
-    <div class="credits-divider"></div>
+    <div class="credits-seal"><span class="credits-seal-mark">🕵️</span></div>
 
     <div class="credits-block">
       <div class="credits-row">
@@ -1152,7 +1252,10 @@
       </div>
     </div>
 
-    <button class="btn-primary" id="btn-credits-home">Volver a la portada</button>
+    <div class="credits-divider"></div>
+
+    <button class="btn-primary-dark" id="btn-credits-replay">Jugar otra vez · mismo grupo</button>
+    <button class="btn-secondary-dark" id="btn-credits-home">Volver a la portada</button>
   </div>
 
   <div class="footer-note">DESCUBRE AL ESPÍA</div>
@@ -1296,6 +1399,7 @@ const screens = {
   eliminate: document.getElementById('screen-eliminate'),
   guess: document.getElementById('screen-guess'),
   result: document.getElementById('screen-result'),
+  victory: document.getElementById('screen-victory'),
   credits: document.getElementById('screen-credits'),
 };
 function showScreen(name) {
@@ -1324,6 +1428,9 @@ document.getElementById('mode-master').addEventListener('click', () => {
 document.getElementById('mode-nomaster').addEventListener('click', () => {
   state.gameMode = 'nomaster';
   showScreen('setup');
+});
+document.getElementById('btn-back-cover').addEventListener('click', () => {
+  showScreen('cover');
 });
 
 // ============================================================
@@ -1382,6 +1489,10 @@ document.getElementById('btn-score-plus').addEventListener('click', () => {
 elBtnGotoCategories.addEventListener('click', () => {
   renderCategories();
   showScreen('categories');
+});
+
+document.getElementById('btn-back-mode').addEventListener('click', () => {
+  showScreen('mode');
 });
 
 // ============================================================
@@ -1692,8 +1803,6 @@ function finishMatch({ eliminatedImpostor, guessedRight, impostorIdx }) {
 // ============================================================
 const elResultHeadline = document.getElementById('result-headline');
 const elPointsList = document.getElementById('points-list');
-const elGameWinnerBox = document.getElementById('game-winner-box');
-const elWinnerBadge = document.getElementById('winner-badge');
 const elBtnNextMatch = document.getElementById('btn-next-match');
 const elBtnFullReset = document.getElementById('btn-full-reset');
 
@@ -1714,13 +1823,11 @@ function showResultScreen(headline, gains) {
   }
 
   if (state.gameWinnerIndex !== null) {
-    elGameWinnerBox.classList.remove('hidden');
-    elWinnerBadge.textContent = `🏆 ${displayName(state.gameWinnerIndex)} gana el juego con ${state.scores[state.gameWinnerIndex]} puntos`;
-    elBtnNextMatch.textContent = 'Jugar otra vez · mismo grupo';
-    elBtnFullReset.textContent = 'Ver créditos';
+    elBtnNextMatch.textContent = 'Continuar';
+    elBtnFullReset.classList.add('hidden');
   } else {
-    elGameWinnerBox.classList.add('hidden');
     elBtnNextMatch.textContent = 'Siguiente partida · mismo grupo';
+    elBtnFullReset.classList.remove('hidden');
     elBtnFullReset.textContent = 'Nuevo grupo desde cero';
   }
 
@@ -1729,18 +1836,13 @@ function showResultScreen(headline, gains) {
 
 document.getElementById('btn-next-match').addEventListener('click', () => {
   if (state.gameWinnerIndex !== null) {
-    // reinicia marcador, mismo grupo y nombres
-    state.scores = new Array(state.playerCount).fill(0);
-    state.gameWinnerIndex = null;
+    showVictoryScreen();
+    return;
   }
   startNewMatch();
 });
 
 elBtnFullReset.addEventListener('click', () => {
-  if (state.gameWinnerIndex !== null) {
-    showCreditsScreen();
-    return;
-  }
   state.playerCount = 8;
   state.winScore = DEFAULT_WIN_SCORE;
   state.names = [];
@@ -1751,19 +1853,32 @@ elBtnFullReset.addEventListener('click', () => {
   renderSetup();
   showScreen('mode');
 });
+
+// ============================================================
+// VICTORY SCREEN (fin del juego completo, pantalla propia)
+// ============================================================
+const elVictoryName = document.getElementById('victory-name');
+const elVictorySub = document.getElementById('victory-sub');
+
+function showVictoryScreen() {
+  elVictoryName.textContent = displayName(state.gameWinnerIndex);
+  elVictorySub.textContent = `ha alcanzado ${state.scores[state.gameWinnerIndex]} puntos y gana la partida`;
+  showScreen('victory');
+}
+
+screens.victory.addEventListener('click', () => {
+  showScreen('credits');
+});
+
 // ============================================================
 // CREDITS SCREEN
 // ============================================================
-const elCreditsWinner = document.getElementById('credits-winner');
-const elCreditsWinnerSub = document.getElementById('credits-winner-sub');
-
-function showCreditsScreen() {
-  if (state.gameWinnerIndex !== null) {
-    elCreditsWinner.textContent = displayName(state.gameWinnerIndex);
-    elCreditsWinnerSub.textContent = `ha ganado el juego con ${state.scores[state.gameWinnerIndex]} puntos`;
-  }
-  showScreen('credits');
-}
+document.getElementById('btn-credits-replay').addEventListener('click', () => {
+  // repite con el mismo grupo, nombres y categorías; reinicia solo el marcador
+  state.scores = new Array(state.playerCount).fill(0);
+  state.gameWinnerIndex = null;
+  startNewMatch();
+});
 
 document.getElementById('btn-credits-home').addEventListener('click', () => {
   state.playerCount = 8;
