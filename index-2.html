@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Descubre al Espía</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#1a1410">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Espía">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #ece5d8;
+    --paper-dim: #ddd3c1;
+    --lacre: #8c2f1d;
+    --lacre-bright: #b23c26;
+    --gold: #a6813f;
+    --gold-dim: #8a6a30;
+    --pueblo: #3d5a45;
+    --casi: #a6813f;
+    --impostor: #8c2f1d;
+    --line: rgba(26,20,16,0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--ink);
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(140,47,29,0.10), transparent 55%),
+      var(--paper);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(26,20,16,0.015) 0px, transparent 1px, transparent 2px, rgba(26,20,16,0.015) 3px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 28px 40px;
+    animation: fadeIn 0.35s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hidden { display: none !important; }
+
+  .eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  /* ---------- COVER SCREEN ---------- */
+  #screen-cover {
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(140,47,29,0.14), transparent 60%),
+      var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    overflow: hidden;
+  }
+  #screen-cover::before {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(236,229,216,0.14);
+    pointer-events: none;
+  }
+  .cover-eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.45);
+    margin-bottom: 34px;
+  }
+  .cover-seal {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--lacre-bright), var(--lacre) 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 36px;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(140,47,29,0.35), inset 0 2px 6px rgba(255,255,255,0.15), inset 0 -6px 10px rgba(0,0,0,0.25);
+    animation: coverPulse 3.2s ease-in-out infinite;
+  }
+  .cover-seal::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(236,229,216,0.55);
+  }
+  .cover-seal-mark {
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 46px;
+    font-weight: 600;
+    color: rgba(236,229,216,0.92);
+    transform: translateY(-2px);
+  }
+  @keyframes coverPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.035); }
+  }
+
+  .cover-title {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+    margin-bottom: 14px;
+  }
+  .cover-title em {
+    display: block;
+    font-style: normal;
+    color: var(--lacre-bright);
+  }
+
+  .cover-tagline {
+    font-size: 15px;
+    color: rgba(236,229,216,0.55);
+    max-width: 280px;
+    line-height: 1.55;
+    margin-bottom: 52px;
+  }
+
+  .cover-cta {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.7);
+    padding: 16px 36px;
+    border: 1.5px solid rgba(236,229,216,0.4);
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+    animation: coverFlicker 2.6s ease-in-out infinite;
+  }
+  @keyframes coverFlicker {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+  /* ---------- HELP SCREEN ---------- */
+  #screen-help {
+    justify-content: flex-start;
+    padding-top: 44px;
+  }
+  .help-block {
+    margin-bottom: 26px;
+  }
+  .help-block-title {
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 10px;
+  }
+  .help-text {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+  .help-text strong {
+    color: var(--lacre);
+    font-weight: 600;
+  }
+
+  /* ---------- SETUP SCREEN ---------- */
+  #screen-setup {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+  }
+
+  .seal {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 2.5px solid var(--lacre);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    position: relative;
+  }
+  .seal::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--lacre);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  .seal-mark {
+    font-size: 40px;
+    color: var(--lacre);
+    line-height: 1;
+    transform: translateY(-2px);
+  }
+
+  h1.title {
+    font-size: 34px;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    font-size: 15.5px;
+    color: var(--ink);
+    opacity: 0.62;
+    max-width: 320px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+  }
+
+  .field-label {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 12px;
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 8px;
+  }
+
+  .step-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    font-size: 22px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    font-family: inherit;
+  }
+  .step-btn:active { transform: scale(0.92); background: rgba(26,20,16,0.08); }
+
+  #player-count {
+    font-size: 56px;
+    font-weight: 600;
+    min-width: 90px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .role-preview {
+    margin-top: 22px;
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+  }
+  .role-preview span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.pueblo { background: var(--pueblo); }
+  .dot.casi { background: var(--casi); }
+  .dot.impostor { background: var(--impostor); }
+
+  .min-warning {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--lacre);
+    opacity: 0.85;
+    min-height: 18px;
+  }
+
+  .btn-primary {
+    margin-top: 36px;
+    width: 100%;
+    padding: 18px;
+    border-radius: 4px;
+    border: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-secondary:active { transform: scale(0.98); background: rgba(26,20,16,0.06); }
+
+  .btn-compact {
+    width: auto;
+    padding: 12px 26px;
+    border-radius: 4px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: transform 0.1s, background 0.15s, opacity 0.15s;
+  }
+  .btn-compact:active { transform: scale(0.96); background: rgba(26,20,16,0.06); opacity: 1; }
+
+  .btn-compact-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .btn-compact-row .btn-compact {
+    flex: 1;
+    padding: 12px 10px;
+  }
+
+  .btn-compact-dark {
+    width: auto;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(236,229,216,0.35);
+    background: transparent;
+    color: rgba(236,229,216,0.75);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 22px;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-compact-dark:active { transform: scale(0.96); background: rgba(236,229,216,0.08); }
+
+  .btn-primary-dark {
+    width: 100%;
+    padding: 18px;
+    border-radius: 4px;
+    border: none;
+    background: var(--lacre-bright);
+    color: var(--paper);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(178,60,38,0.35);
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-primary-dark:active { transform: scale(0.98); }
+
+  .btn-secondary-dark {
+    width: 100%;
+    padding: 16px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(236,229,216,0.5);
+    background: transparent;
+    color: var(--paper);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .btn-secondary-dark:active { transform: scale(0.98); background: rgba(236,229,216,0.08); }
+
+  .btn-text {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    text-decoration: underline;
+    text-decoration-color: rgba(166,129,63,0.4);
+  }
+
+  /* ---------- NAMES SCREEN ---------- */
+  #screen-names {
+    justify-content: flex-start;
+    padding-top: 48px;
+  }
+  .names-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 28px 0 8px;
+    max-height: 56vh;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .name-num {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--gold-dim);
+    width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .name-input {
+    flex: 1;
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    background: transparent;
+    font-family: inherit;
+    font-size: 16px;
+    padding: 8px 2px;
+    color: var(--ink);
+  }
+  .name-input:focus {
+    outline: none;
+    border-bottom-color: var(--lacre);
+  }
+
+  /* ---------- REVEAL SCREEN ---------- */
+  #screen-reveal {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .progress-track {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .progress-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+  }
+  .progress-dot.done { background: var(--gold-dim); border-color: var(--gold-dim); }
+  .progress-dot.current { background: var(--lacre); border-color: var(--lacre); transform: scale(1.3); }
+
+  .player-tag {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 18px;
+  }
+
+  .word-card {
+    width: 100%;
+    min-height: 190px;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.35), transparent 40%),
+      var(--paper);
+    box-shadow: 0 1px 0 rgba(26,20,16,0.05) inset;
+  }
+  .word-card::before, .word-card::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--ink);
+  }
+  .word-card::before { top: -1.5px; left: -1.5px; border-right: none; border-bottom: none; }
+  .word-card::after { bottom: -1.5px; right: -1.5px; border-left: none; border-top: none; }
+
+  .word-text {
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    animation: stamp 0.4s cubic-bezier(.2,1.4,.4,1) both;
+  }
+
+  @keyframes stamp {
+    from { opacity: 0; transform: scale(1.15); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .hint-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold-dim);
+    background: transparent;
+    color: var(--gold-dim);
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .hint-btn:active { transform: scale(0.9); background: rgba(166,129,63,0.14); }
+
+  .hint-box {
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 5px;
+    border: 1px dashed var(--line);
+    background: rgba(166,129,63,0.06);
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--ink);
+    opacity: 0.85;
+    text-align: left;
+    animation: fadeIn 0.25s ease both;
+  }
+
+  .tap-hint {
+    margin-top: 40px;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.4;
+  }
+
+  /* ---------- ELIMINATION SCREEN ---------- */
+  #screen-eliminate {
+    justify-content: flex-start;
+    padding-top: 48px;
+    text-align: center;
+  }
+  .elim-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .elim-subtitle {
+    font-size: 14.5px;
+    opacity: 0.6;
+    margin-bottom: 30px;
+  }
+  .elim-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .elim-btn {
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 17px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .elim-btn:active { transform: scale(0.98); background: rgba(140,47,29,0.08); }
+  .elim-btn .elim-arrow { opacity: 0.4; font-family: 'Courier New', monospace; font-size: 13px; }
+
+  .link-under {
+    margin-top: 26px;
+    text-align: center;
+  }
+
+  /* ---------- GUESS SCREEN (impostor caught) ---------- */
+  #screen-guess {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .guess-seal {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--impostor);
+    margin-bottom: 14px;
+  }
+  .guess-name {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .guess-sub {
+    font-size: 14.5px;
+    opacity: 0.6;
+    max-width: 300px;
+    margin: 0 auto 36px;
+    line-height: 1.5;
+  }
+  .guess-word-label {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pueblo);
+    margin-bottom: 10px;
+  }
+  .guess-word-card {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--pueblo);
+    padding: 16px 20px;
+    border: 1.5px solid var(--pueblo);
+    border-radius: 6px;
+    background: rgba(61,90,69,0.06);
+    margin-bottom: 32px;
+    width: 100%;
+    text-align: center;
+  }
+  .guess-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ---------- RESULT SCREEN ---------- */
+  #screen-result {
+    justify-content: flex-start;
+    padding-top: 44px;
+    text-align: center;
+  }
+  .result-seal {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--lacre);
+    margin-bottom: 10px;
+  }
+  .result-headline {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .result-sub {
+    font-size: 14px;
+    opacity: 0.55;
+    margin-bottom: 30px;
+  }
+  .points-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+  .points-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .points-row .pname {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .points-row .pgain {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--gold-dim);
+    min-width: 34px;
+    text-align: right;
+  }
+  .points-row .pgain.zero { opacity: 0.35; }
+  .points-row .ptotal {
+    font-size: 20px;
+    font-weight: 600;
+    min-width: 30px;
+    text-align: right;
+  }
+  .result-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  /* ---------- CREDITS SCREEN ---------- */
+  #screen-credits {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(140,47,29,0.12), transparent 60%),
+      var(--ink);
+    color: var(--paper);
+  }
+  .credits-seal {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 2px solid rgba(236,229,216,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    position: relative;
+  }
+  .credits-seal::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid rgba(236,229,216,0.3);
+    border-radius: 50%;
+  }
+  .credits-seal-mark { font-size: 34px; line-height: 1; }
+
+  .credits-eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.45);
+    margin-bottom: 10px;
+  }
+
+  .credits-block {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 48px;
+  }
+  .credits-row .credits-role {
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.4);
+    margin-bottom: 5px;
+  }
+  .credits-row .credits-name {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--paper);
+  }
+  .credits-row .credits-name .studio {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: rgba(236,229,216,0.5);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .credits-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(236,229,216,0.2);
+    margin: 0 auto 46px;
+  }
+
+  /* ---------- MODE SCREEN ---------- */
+  #screen-mode {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .mode-card {
+    width: 100%;
+    padding: 22px 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: transform 0.1s, background 0.15s;
+  }
+  .mode-card:active { transform: scale(0.98); background: rgba(140,47,29,0.06); }
+  .mode-card-title {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .mode-card-desc {
+    font-size: 13.5px;
+    opacity: 0.62;
+    line-height: 1.45;
+  }
+
+  /* ---------- CATEGORIES SCREEN ---------- */
+  #screen-categories {
+    justify-content: flex-start;
+    padding-top: 44px;
+  }
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 24px 0 8px;
+  }
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .cat-row.checked {
+    border-color: var(--lacre);
+    background: rgba(140,47,29,0.05);
+  }
+  .cat-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 1.5px solid var(--ink);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--paper);
+  }
+  .cat-row.checked .cat-checkbox {
+    background: var(--lacre);
+    border-color: var(--lacre);
+  }
+  .cat-label {
+    font-size: 15.5px;
+    flex: 1;
+  }
+  .cat-count {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--gold-dim);
+    opacity: 0.7;
+  }
+  .cat-warning {
+    font-size: 13px;
+    color: var(--lacre);
+    opacity: 0.85;
+    min-height: 18px;
+    margin-top: 6px;
+    text-align: center;
+  }
+  .cat-quick-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- PASS SCREEN (traspaso protegido, sin máster) ---------- */
+  #screen-pass {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .pass-icon {
+    font-size: 44px;
+    margin-bottom: 22px;
+    opacity: 0.85;
+  }
+  .pass-title {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.5);
+    margin-bottom: 18px;
+  }
+  .pass-name {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .pass-sub {
+    font-size: 14px;
+    color: rgba(236,229,216,0.55);
+  }
+
+  /* ---------- VICTORY SCREEN (fin del juego completo) ---------- */
+  #screen-victory {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 25%, rgba(140,47,29,0.22), transparent 60%),
+      var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .victory-eyebrow {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.5);
+    margin-bottom: 26px;
+  }
+  .victory-trophy {
+    font-size: 72px;
+    margin-bottom: 24px;
+    animation: coverPulse 2.4s ease-in-out infinite;
+  }
+  .victory-name {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .victory-sub {
+    font-size: 16px;
+    color: rgba(236,229,216,0.6);
+    max-width: 300px;
+    line-height: 1.5;
+    margin-bottom: 50px;
+  }
+  .victory-tap {
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(236,229,216,0.4);
+    animation: coverFlicker 2.6s ease-in-out infinite;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    opacity: 0.3;
+    padding: 18px 0 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ COVER SCREEN ============ -->
+  <div class="screen" id="screen-cover">
+    <div class="cover-eyebrow">Expediente confidencial</div>
+    <div class="cover-seal"><span class="cover-seal-mark">?</span></div>
+    <h1 class="cover-title">DESCUBRE<br>AL <em>ESPÍA</em></h1>
+    <p class="cover-tagline">Uno no sabe la palabra. Dos la conocen a medias. El resto guarda el mismo secreto. Descubrid quién miente antes de que sea tarde.</p>
+    <button class="cover-cta" id="btn-cover-play">Toca para abrir el expediente</button>
+    <button class="btn-compact-dark" id="btn-cover-help">Cómo se juega</button>
+  </div>
+
+  <!-- ============ HELP SCREEN ============ -->
+  <div class="screen hidden" id="screen-help">
+    <div class="eyebrow">Instrucciones</div>
+    <h1 class="title" style="font-size:26px;">Cómo se juega</h1>
+
+    <div class="help-block">
+      <div class="help-block-title">Los roles</div>
+      <p class="help-text"><strong>Agentes</strong> — la mayoría de jugadores. Todos reciben la misma palabra secreta.</p>
+      <p class="help-text"><strong>Topos</strong> — uno o varios jugadores (según cuántos seáis) reciben una palabra parecida a la de los Agentes, pero no idéntica. Cada uno va por su cuenta.</p>
+      <p class="help-text"><strong>El Espía</strong> — un jugador no recibe ninguna palabra. Tiene que fingir que sabe de qué se habla.</p>
+    </div>
+
+    <div class="help-block">
+      <div class="help-block-title">Cómo se juega cada ronda</div>
+      <p class="help-text">Por turnos, cada jugador vivo dice una palabra o pista relacionada con la suya, sin decirla literalmente. Después, todos discuten libremente y votan a quién eliminar.</p>
+    </div>
+
+    <div class="help-block">
+      <div class="help-block-title">Cómo termina una partida</div>
+      <p class="help-text">Si eliminan al Espía, se le pregunta si adivinó la palabra de los Agentes: si acierta, gana él solo; si falla, ganan los demás jugadores que seguían vivos en ese momento.</p>
+      <p class="help-text">Si nunca cazan al Espía, la partida se resuelve sola cuando quedan tan pocos vivos como Espía y Topos juntos (por ejemplo, con 8 jugadores eso son 3: el Espía y los 2 Topos). En ese momento el Espía sigue vivo y gana automáticamente. Cuantos más jugadores haya, más Topos hay y antes se resuelve la partida, para que el Espía no tenga que sobrevivir a rondas de más solo por jugar en un grupo grande.</p>
+    </div>
+
+    <div class="help-block">
+      <div class="help-block-title">Puntos</div>
+      <p class="help-text">El Espía gana <strong>3 puntos</strong> si sobrevive o adivina. Si es descubierto y falla, cada <strong>Topo</strong> vivo gana <strong>2 puntos</strong> y cada <strong>Agente</strong> vivo gana <strong>1 punto</strong>.</p>
+      <p class="help-text">Los puntos se acumulan entre partidas. El juego termina en cuanto alguien alcanza la puntuación objetivo que se haya configurado.</p>
+    </div>
+
+    <button class="btn-primary" id="btn-help-back">Volver</button>
+  </div>
+
+  <!-- ============ MODE SCREEN ============ -->
+  <div class="screen hidden" id="screen-mode">
+    <div class="eyebrow">Paso 1 de 3</div>
+    <h1 class="title" style="font-size:28px;">¿Cómo vais a jugar?</h1>
+    <p class="subtitle" style="margin-bottom:8px;">Esta elección no se puede cambiar durante la partida</p>
+
+    <button class="mode-card" id="mode-master">
+      <div class="mode-card-title">Con máster</div>
+      <div class="mode-card-desc">Una persona controla el móvil y va anunciando en voz alta "Jugador 1, Jugador 2..." mientras cada uno mira la pantalla en su turno. El máster no juega.</div>
+    </button>
+
+    <button class="mode-card" id="mode-nomaster">
+      <div class="mode-card-title">Sin máster</div>
+      <div class="mode-card-desc">El móvil se pasa de mano en mano. Entre cada jugador aparece una pantalla de seguridad para que nadie vea la palabra ajena durante el traspaso. Todos juegan.</div>
+    </button>
+
+    <div class="link-under"><button class="btn-compact" id="btn-back-cover">Volver</button></div>
+  </div>
+
+  <!-- ============ SETUP SCREEN ============ -->
+  <div class="screen hidden" id="screen-setup">
+    <div class="seal"><span class="seal-mark">?</span></div>
+    <div class="eyebrow">Paso 2 de 3</div>
+    <h1 class="title">Descubre al Espía</h1>
+    <p class="subtitle">Reparte roles secretos entre los jugadores. Agentes, Topos y el Espía. Descubrid quién miente.</p>
+
+    <div class="field-label">Número de jugadores</div>
+    <div class="stepper">
+      <button class="step-btn" id="btn-minus">–</button>
+      <div id="player-count">8</div>
+      <button class="step-btn" id="btn-plus">+</button>
+    </div>
+
+    <div class="role-preview" id="role-preview"></div>
+    <div class="min-warning" id="min-warning"></div>
+
+    <div class="field-label" style="margin-top:30px;">Puntos para ganar el juego</div>
+    <div class="stepper">
+      <button class="step-btn" id="btn-score-minus">–</button>
+      <div id="win-score-count">13</div>
+      <button class="step-btn" id="btn-score-plus">+</button>
+    </div>
+    <div class="min-warning" id="score-warning"></div>
+
+    <button class="btn-primary" id="btn-goto-categories">Continuar</button>
+    <div class="link-under"><button class="btn-compact" id="btn-back-mode">Volver</button></div>
+  </div>
+
+  <!-- ============ CATEGORIES SCREEN ============ -->
+  <div class="screen hidden" id="screen-categories">
+    <div class="eyebrow">Paso 3 de 3</div>
+    <h1 class="title" style="font-size:26px;">Elige las temáticas</h1>
+    <p class="subtitle" style="margin-bottom:4px;">Selecciona una o varias. Las palabras de la partida saldrán solo de aquí.</p>
+
+    <div class="cat-quick-actions">
+      <button class="btn-compact" id="btn-cat-all">Marcar todas</button>
+      <button class="btn-compact" id="btn-cat-none">Desmarcar todas</button>
+    </div>
+
+    <div class="cat-list" id="cat-list"></div>
+    <div class="cat-warning" id="cat-warning"></div>
+
+    <button class="btn-primary" id="btn-goto-names">Continuar</button>
+    <div class="link-under"><button class="btn-compact" id="btn-back-setup-from-cat">Volver</button></div>
+  </div>
+
+  <!-- ============ NAMES SCREEN ============ -->
+  <div class="screen hidden" id="screen-names">
+    <div class="eyebrow">Opcional</div>
+    <h1 class="title" style="font-size:26px;">Nombres de los jugadores</h1>
+    <p class="subtitle" style="margin-bottom:10px;">Déjalo en blanco para usar "Jugador 1, 2, 3…"</p>
+
+    <div class="names-list" id="names-list"></div>
+
+    <button class="btn-primary" id="btn-start">Comenzar partida</button>
+    <div class="link-under"><button class="btn-compact" id="btn-back-setup">Volver</button></div>
+  </div>
+
+  <!-- ============ PASS SCREEN (traspaso protegido) ============ -->
+  <div class="screen hidden" id="screen-pass">
+    <div class="pass-icon">🤝</div>
+    <div class="pass-title">Pantalla bloqueada</div>
+    <div class="pass-name" id="pass-name">Pasa el móvil a Jugador 2</div>
+    <div class="pass-sub">Toca cuando lo tengas en la mano</div>
+  </div>
+
+  <!-- ============ REVEAL SCREEN ============ -->
+  <div class="screen hidden" id="screen-reveal">
+    <div class="progress-track" id="progress-track"></div>
+    <div class="player-tag" id="player-tag">Jugador 1</div>
+    <div class="word-card">
+      <button class="hint-btn" id="hint-btn" aria-label="Qué significa esta palabra">?</button>
+      <div class="word-text" id="word-text">Playa</div>
+    </div>
+    <div class="hint-box hidden" id="hint-box"></div>
+    <div class="tap-hint" id="tap-hint">Toca para continuar</div>
+  </div>
+
+  <!-- ============ ELIMINATION SCREEN ============ -->
+  <div class="screen hidden" id="screen-eliminate">
+    <div class="elim-title">¿A quién eliminan?</div>
+    <div class="elim-subtitle" id="elim-subtitle">Selecciona el jugador que ha sido votado fuera</div>
+    <div class="elim-list" id="elim-list"></div>
+  </div>
+
+  <!-- ============ GUESS SCREEN (impostor cazado) ============ -->
+  <div class="screen hidden" id="screen-guess">
+    <div class="guess-seal">Espía descubierto</div>
+    <div class="guess-name" id="guess-name">Jugador 3</div>
+    <p class="guess-sub">Antes de repartir puntos: ¿ha conseguido adivinar la palabra secreta de los Agentes?</p>
+    <div class="guess-word-label">La palabra era</div>
+    <div class="guess-word-card" id="guess-word-card">Playa</div>
+    <div class="guess-buttons">
+      <button class="btn-primary" id="btn-guess-yes">Sí, la adivinó</button>
+      <button class="btn-secondary" id="btn-guess-no">No, falló</button>
+    </div>
+  </div>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <div class="screen hidden" id="screen-result">
+    <div class="result-seal" id="result-seal">Partida terminada</div>
+    <div class="result-headline" id="result-headline">Gana el Espía</div>
+    <div class="result-sub" id="result-sub">Reparto de puntos de esta partida</div>
+
+    <div class="points-list" id="points-list"></div>
+
+    <div class="result-buttons">
+      <button class="btn-primary" id="btn-next-match">Siguiente partida · mismo grupo</button>
+      <button class="btn-secondary" id="btn-full-reset">Nuevo grupo desde cero</button>
+    </div>
+  </div>
+
+  <!-- ============ VICTORY SCREEN (fin del juego completo) ============ -->
+  <div class="screen hidden" id="screen-victory">
+    <div class="victory-eyebrow">Fin del juego</div>
+    <div class="victory-trophy">🏆</div>
+    <div class="victory-name" id="victory-name">Jugador 1</div>
+    <div class="victory-sub" id="victory-sub">ha alcanzado 13 puntos y gana la partida</div>
+    <div class="victory-tap">Toca para continuar</div>
+  </div>
+
+  <!-- ============ CREDITS SCREEN ============ -->
+  <div class="screen hidden" id="screen-credits">
+    <div class="credits-eyebrow">Fin del expediente</div>
+    <div class="credits-seal"><span class="credits-seal-mark">🕵️</span></div>
+
+    <div class="credits-block">
+      <div class="credits-row">
+        <div class="credits-role">Creado por</div>
+        <div class="credits-name">Dennis Bateman
+          <span class="studio">Kasuals Games</span>
+        </div>
+      </div>
+      <div class="credits-row">
+        <div class="credits-role">Con la ayuda de</div>
+        <div class="credits-name">Claude</div>
+      </div>
+    </div>
+
+    <div class="credits-divider"></div>
+
+    <button class="btn-primary-dark" id="btn-credits-replay">Jugar otra vez · mismo grupo</button>
+    <button class="btn-secondary-dark" id="btn-credits-home">Volver a la portada</button>
+  </div>
+
+  <div class="footer-note">DESCUBRE AL ESPÍA</div>
+</div>
+
+<script>
+// ============================================================
+// BASE DE PALABRAS
+// ============================================================
+const CATEGORIES = [{"id":"clasico","label":"Clásico (objetos y vida diaria)","pairs":[["Playa","Costa"],["Montaña","Colina"],["Río","Lago"],["Mar","Océano"],["Bosque","Selva"],["Desierto","Sabana"],["Volcán","Cráter"],["Cueva","Gruta"],["Isla","Península"],["Cascada","Rápido"],["Pueblo","Aldea"],["Ciudad","Metrópoli"],["Barrio","Vecindario"],["Castillo","Palacio"],["Torre","Faro"],["Puente","Viaducto"],["Iglesia","Catedral"],["Plaza","Mercado"],["Calle","Avenida"],["Jardín","Huerto"],["Mesa","Silla"],["Sofá","Sillón"],["Cama","Litera"],["Armario","Cajón"],["Espejo","Cuadro"],["Cortina","Persiana"],["Alfombra","Manta"],["Lámpara","Vela"],["Puerta","Ventana"],["Techo","Suelo"],["Pared","Tejado"],["Cocina","Comedor"],["Baño","Ducha"],["Garaje","Sótano"],["Balcón","Terraza"],["Escalera","Ascensor"],["Llave","Cerradura"],["Teléfono","Tableta"],["Televisión","Radio"],["Ordenador","Portátil"],["Cámara","Videocámara"],["Reloj","Despertador"],["Gafas","Lentillas"],["Paraguas","Chubasquero"],["Bolso","Cartera"],["Zapatos","Zapatillas"],["Botas","Sandalias"],["Camiseta","Camisa"],["Pantalón","Falda"],["Chaqueta","Abrigo"],["Gorro","Sombrero"],["Bufanda","Guantes"],["Cinturón","Corbata"],["Pijama","Bañador"],["Anillo","Pulsera"],["Collar","Pendiente"],["Lápiz","Bolígrafo"],["Cuaderno","Libreta"],["Libro","Cómic"],["Revista","Periódico"],["Mochila","Estuche"],["Tijeras","Pegamento"],["Regla","Compás"],["Pizarra","Rotulador"],["Guitarra","Violín"],["Piano","Teclado"],["Batería","Tambor"],["Flauta","Trompeta"],["Micrófono","Altavoz"],["Cuadro","Escultura"],["Pincel","Paleta"],["Muñeca","Peluche"],["Pelota","Balón"],["Cometa","Globo"],["Puzzle","Rompecabezas"],["Columpio","Tobogán"],["Triciclo","Monopatín"],["Jacuzzi","Bañera"],["Cala","Acantilado"],["Chimenea","Estufa"],["Termómetro","Barómetro"],["Cumpleaños","Aniversario"],["Navidad","Reyes"],["Boda","Bautizo"],["Fiesta","Verbena"],["Vacaciones","Excursión"],["Viaje","Ruta"],["Maleta","Mochila"],["Mapa","Brújula"],["Pasaporte","Billete"],["Camping","Refugio"],["Tienda","Caravana"],["Hoguera","Barbacoa"],["Escuela","Instituto"],["Universidad","Academia"],["Biblioteca","Librería"],["Museo","Galería"],["Teatro","Cine"],["Hospital","Clínica"],["Farmacia","Botica"],["Supermercado","Tienda"],["Restaurante","Cafetería"],["Hotel","Hostal"],["Banco","Cajero"],["Gimnasio","Piscina"],["Parque","Jardín"],["Estadio","Pabellón"],["Aeropuerto","Puerto"]]},{"id":"animales","label":"Animales","pairs":[["Perro","Lobo"],["Gato","Lince"],["Caballo","Burro"],["Vaca","Toro"],["Oveja","Cabra"],["Cerdo","Jabalí"],["Gallina","Pavo"],["Pato","Cisne"],["Águila","Halcón"],["Búho","Lechuza"],["León","Tigre"],["Elefante","Rinoceronte"],["Jirafa","Camello"],["Mono","Chimpancé"],["Oso","Panda"],["Zorro","Coyote"],["Conejo","Liebre"],["Ardilla","Castor"],["Ratón","Hámster"],["Serpiente","Lagarto"],["Rana","Sapo"],["Tortuga","Cangrejo"],["Delfín","Ballena"],["Tiburón","Orca"],["Pulpo","Calamar"],["Abeja","Avispa"],["Mariposa","Polilla"],["Araña","Escorpión"],["Hormiga","Termita"],["Mosca","Mosquito"],["Grillo","Saltamontes"],["Cebra","Antílope"],["Hipopótamo","Rinoceronte"],["Koala","Canguro"],["Pingüino","Foca"],["Morsa","Nutria"],["Murciélago","Búho"],["Cocodrilo","Caimán"],["Iguana","Camaleón"],["Erizo","Puercoespín"],["Mapache","Tejón"],["Ciervo","Alce"],["Bisonte","Búfalo"],["Delfín","Tiburón"],["Águila","Cóndor"]]},{"id":"comida","label":"Comida y bebida","pairs":[["Manzana","Pera"],["Naranja","Mandarina"],["Plátano","Banana"],["Fresa","Frambuesa"],["Uva","Ciruela"],["Melón","Sandía"],["Piña","Mango"],["Limón","Lima"],["Cereza","Guinda"],["Kiwi","Aguacate"],["Pan","Bollo"],["Queso","Yogur"],["Leche","Nata"],["Mantequilla","Margarina"],["Huevo","Tortilla"],["Arroz","Pasta"],["Patata","Boniato"],["Tomate","Pimiento"],["Cebolla","Ajo"],["Zanahoria","Nabo"],["Lechuga","Espinaca"],["Pepino","Calabacín"],["Café","Té"],["Zumo","Batido"],["Agua","Refresco"],["Vino","Sidra"],["Chocolate","Cacao"],["Caramelo","Chicle"],["Helado","Sorbete"],["Tarta","Bizcocho"],["Galleta","Magdalena"],["Pizza","Empanada"],["Hamburguesa","Bocadillo"],["Sopa","Caldo"],["Ensalada","Guiso"],["Pizza","Lasaña"],["Espaguetis","Macarrones"],["Croissant","Napolitana"],["Tortilla de patatas","Paella"],["Empanada gallega","Pastel de carne"],["Pulpo á feira","Mejillones"],["Churros","Porras"],["Donut","Rosquilla"],["Sushi","Ramen"],["Taco","Burrito"]]},{"id":"personajes_rasgo","label":"Personajes por rasgo compartido","pairs":[["Shrek","Hulk"],["Yoda","el Grinch"],["Hulk","Piccolo"],["Mike Wazowski","Gary el caracol"],["Peter Pan","Link"],["Superman","Batman"],["Thor","Doctor Strange"],["Vegeta","Piccolo"],["Mickey Mago","Harry Potter"],["Superman","Hulk"],["El Primo","Saitama"],["Goku","Superman"],["Hércules","Maui"],["Superman","Iron Man"],["Peter Pan","Campanilla"],["Buzz Lightyear","Iron Man"],["Dumbo","Pegaso"],["Elsa","Iceman"],["Elsa","Sub-Zero"],["Olaf","un muñeco de nieve"],["Killer Frost","Elsa"],["Antorcha Humana","Natsu"],["Charmander","un dragón escupefuego"],["Zuko","Ace"],["Darth Vader","Sauron"],["Maléfica","Úrsula"],["Joker","el Duende Verde"],["Thanos","Bowser"],["Gargamel","Eggman"],["Elsa","Cenicienta"],["Ariel","Moana"],["Bella","Rapunzel"],["Blancanieves","la Princesa Aurora"],["Sherlock Holmes","Scooby-Doo"],["Indiana Jones","Lara Croft"],["Tintín","Dora la Exploradora"],["Mickey Mouse","Jerry"],["Pikachu","Sonic"],["Stuart Little","Remy"]]},{"id":"disney_pixar","label":"Disney y Pixar","pairs":[["Elsa","Anna"],["Woody","Buzz Lightyear"],["Simba","Mufasa"],["Nemo","Dory"],["Mickey","Minnie"],["Donald","Daisy"],["Mirabel","Isabela"],["Moana","Maui"],["Rapunzel","Flynn Rider"],["Olaf","Sven"],["Remy","Emile"],["Sulley","Mike Wazowski"],["Lightning McQueen","Mate"],["Bella","la Bestia"],["Aladdín","Jasmine"],["el Genio","Hades"],["Peter Pan","Garfio"],["Dumbo","Bambi"],["Stitch","Toothless"],["Alegría","Tristeza"]]},{"id":"marvel","label":"Marvel (Vengadores y X-Men)","pairs":[["Iron Man","War Machine"],["Capitán América","Capitana Marvel"],["Thor","Loki"],["Spider-Man","Miles Morales"],["Hulk","Hulka"],["Viuda Negra","Ojo de Halcón"],["Doctor Strange","Escarlata"],["Pantera Negra","Killmonger"],["Lobezno","Dientes de Sable"],["Charles Xavier","Magneto"],["Tormenta (X-Men)","Iceman"],["Groot","Rocket"],["Star-Lord","Gamora"],["Thanos","Loki"],["Deadpool","Spider-Man"]]},{"id":"videojuegos","label":"Videojuegos","pairs":[["Mario","Luigi"],["Bowser","Donkey Kong"],["Yoshi","Toad"],["Peach","Daisy"],["Sonic","Mario"],["Kirby","Jigglypuff"],["Link","Zelda"],["Pikachu","Raichu"],["Creeper","Enderman"],["Steve","Alex"],["Zombi","Esqueleto"],["Espada de diamante","Pico de diamante"],["Aldeano","Piglin"],["Shelly","Colt"],["Leon","Crow"],["El Primo","Bull"],["Spike","Sandy"],["Poco","Bo"],["Mortis","Edgar"],["Fortnite","PUBG"],["Sonic","Tails"],["Sonic","Knuckles"],["Eggman","Bowser"],["Stumble Guys","Fall Guys"],["el tripulante de Among Us","el impostor de Among Us"],["Pac-Man","Blinky"],["Steve","un personaje de Roblox"]]},{"id":"anime","label":"Anime y manga","pairs":[["Goku","Vegeta"],["Goku","Superman"],["Luffy","Zoro"],["Naruto","Sasuke"],["Pikachu","Charmander"],["Tanjiro","Zenitsu"],["Nezuko","Tanjiro"],["Gojo","Yuji"],["Ash","Misty"],["Doraemon","el Gato con Botas"],["Shin-chan","Nobita"],["Sailor Moon","una Guerrera Winx"]]},{"id":"dibujos","label":"Dibujos animados","pairs":[["Bob Esponja","Patricio"],["Bob Esponja","Calamardo"],["Tom","Jerry"],["Bugs Bunny","el Pato Lucas"],["Phineas","Ferb"],["Dipper","Mabel"],["Gumball","Darwin"],["Homer Simpson","Peter Griffin"],["Bart Simpson","Lisa Simpson"],["Doraemon","Gadget"],["Bombón","Bellota"],["Scooby-Doo","Shaggy"],["Papá Pitufo","Gargamel"]]},{"id":"superheroes","label":"Superhéroes vs villanos","pairs":[["Batman","Robin"],["Batman","Superman"],["Joker","Harley Quinn"],["Flash","Quicksilver"],["Aquaman","Namor"],["Wonder Woman","Capitana Marvel"],["Green Lantern","Iron Man"],["Catwoman","Black Cat"]]},{"id":"cuentos","label":"Cuentos clásicos","pairs":[["Caperucita Roja","el Lobo Feroz"],["Blancanieves","la Bella Durmiente"],["Cenicienta","su madrastra"],["Pinocho","Peter Pan"],["los Tres Cerditos","el Lobo"],["Hansel","Gretel"],["el Gato con Botas","el Marqués de Carabás"],["Aladino","el genio"],["Rapunzel","la bruja"],["el Patito Feo","el cisne"]]},{"id":"fantasia","label":"Criaturas y objetos de fantasía","pairs":[["Dragón","Hidra"],["Unicornio","Pegaso"],["Sirena","Tritón"],["Fénix","Dragón"],["Grifo","Esfinge"],["Minotauro","Centauro"],["Cíclope","Gigante"],["Kraken","Serpiente marina"],["Cerbero","Lobo de tres cabezas"],["Medusa","Gorgona"],["Hada","Duende"],["Vampiro","Hombre lobo"],["Zombi","Momia"],["Troll","Ogro"],["Yeti","Pie Grande"],["Varita mágica","Bastón de mago"],["Alfombra voladora","Escoba voladora"],["Espada mágica","Escudo mágico"],["Anillo mágico","Medallón mágico"],["Poción mágica","Hechizo"],["Bola de cristal","Espejo mágico"],["Castillo encantado","Torre del mago"],["Mazmorra","Laberinto"],["Escuela de magia","Academia de hechiceros"],["Tesoro pirata","Cofre del dragón"]]},{"id":"mitologia_galega","label":"Mitología gallega","pairs":[["Trasno","Duende"],["Meiga","Bruja"],["Mouro","Gnomo"],["Santa Compaña","Procesión de fantasmas"],["Nubeiro","Mago del tiempo"],["Olláparo","Cíclope"],["Sirena de las Rías","Sirena"],["Lobishome","Hombre lobo"],["Apalpador","Papá Noel"],["Basilisco","Dragón"]]},{"id":"monumentos","label":"Monumentos del mundo","pairs":[["Torre Eiffel","Torre de Pisa"],["Torre Eiffel","el Big Ben"],["Big Ben","el reloj de una plaza"],["Burj Khalifa","Empire State Building"],["Estatua de la Libertad","Cristo Redentor"],["Coliseo","Partenón"],["Pirámides de Egipto","Pirámides mayas"],["Gran Muralla China","Muralla de Ávila"],["Machu Picchu","Petra"],["Stonehenge","un dolmen"],["Esfinge de Guiza","una esfinge griega"],["Sagrada Familia","Catedral de Santiago"],["Sagrada Familia","Notre Dame"],["Mezquita de Córdoba","la Alhambra"],["Acueducto de Segovia","un puente romano"],["Taj Mahal","Sagrada Familia"]]},{"id":"ciudades","label":"Ciudades del mundo","pairs":[["París","Londres"],["Madrid","Barcelona"],["Nueva York","Chicago"],["Roma","Atenas"],["Tokio","Seúl"],["Venecia","Ámsterdam"],["Río de Janeiro","Sídney"],["El Cairo","Dubái"],["Santiago de Compostela","Lugo"],["La Coruña","Vigo"],["Sevilla","Granada"],["Moscú","San Petersburgo"]]},{"id":"deporte","label":"Deporte","pairs":[["Lamine Yamal","Nico Williams"],["Messi","Cristiano Ronaldo"],["FC Barcelona","Real Madrid"],["Balón de fútbol","Balón de baloncesto"],["Portero","Delantero"],["Mundial","Eurocopa"],["Fórmula 1","MotoGP"],["Rafa Nadal","Carlos Alcaraz"],["LeBron James","Michael Jordan"],["Estadio Bernabéu","Camp Nou"],["Árbitro","Entrenador"],["Tenis","Pádel"]]},{"id":"espacio","label":"Espacio y astronomía","pairs":[["Sol","una estrella"],["Luna","un satélite"],["Tierra","Marte"],["Marte","Venus"],["Cohete","Transbordador espacial"],["Astronauta","Cosmonauta"],["Estrella fugaz","Cometa espacial"],["Agujero negro","Estrella de neutrones"],["Saturno","Júpiter"],["Telescopio","Satélite"],["Estación Espacial","Nave espacial"],["Galaxia","Nebulosa"]]},{"id":"dinosaurios","label":"Dinosaurios y prehistoria","pairs":[["Tiranosaurio Rex","Giganotosaurio"],["Velociraptor","Deinonychus"],["Triceratops","Estegosaurio"],["Brontosaurio","Diplodocus"],["Pterodáctilo","Pteranodon"],["Espinosaurio","T-Rex"],["Mamut","Mastodonte"],["Tigre dientes de sable","León de las cavernas"],["Anquilosaurio","Estegosaurio"],["Fósil","Ámbar con insecto"]]},{"id":"vehiculos","label":"Vehículos y transporte","pairs":[["Coche","Moto"],["Avión","Helicóptero"],["Tren","Metro"],["Barco","Submarino"],["Camión","Autobús"],["Bicicleta","Patinete"],["Coche de Fórmula 1","Coche de rally"],["Ferrari","Lamborghini"],["Globo aerostático","Dirigible"],["Cohete","Avión de caza"],["Ambulancia","Coche de bomberos"],["Tractor","Excavadora"]]},{"id":"tecnologia","label":"Tecnología y marcas","pairs":[["PlayStation","Xbox"],["Nintendo Switch","Steam Deck"],["iPhone","un móvil Android"],["YouTube","TikTok"],["WhatsApp","Telegram"],["Netflix","Disney+"],["Google","Bing"],["Instagram","Snapchat"],["Portátil","Tablet"],["Mando de consola","Teclado gamer"],["Auriculares","Altavoz"],["Robot","Dron"]]},{"id":"actualidad","label":"Actualidad 2025-26","pairs":[["Rumi","Mira"],["HUNTR/X","los Saja Boys"],["Jinu","un miembro de HUNTR/X"],["Labubu","Sonny Angel"],["Labubu","Molly"],["Mikecrack","DaniRep"],["TheGrefg","Vegetta777"],["Ibai","AuronPlay"],["ElRubius","Willyrex"],["Vegetta777","Willyrex"]]}];
+const WORD_HINTS = {"Playa":"Franja de arena junto al mar","Costa":"Línea de tierra junto al mar","Montaña":"Elevación de terreno muy alta","Colina":"Elevación de terreno pequeña","Río":"Corriente de agua dulce que fluye hacia el mar","Lago":"Gran masa de agua rodeada de tierra","Mar":"Gran extensión de agua salada","Océano":"La mayor extensión de agua salada del planeta","Bosque":"Terreno con muchos árboles","Selva":"Bosque tropical muy denso y húmedo","Desierto":"Zona muy seca con casi nada de agua","Sabana":"Llanura tropical con hierba y pocos árboles","Volcán":"Montaña que puede expulsar lava","Cráter":"Agujero en la boca de un volcán","Cueva":"Hueco natural bajo tierra o en la roca","Gruta":"Cueva pequeña, a veces decorativa","Isla":"Tierra rodeada de agua por todas partes","Península":"Tierra rodeada de agua casi por completo","Cascada":"Caída de agua desde una altura","Rápido":"Tramo de un río con corriente muy fuerte","Cala":"Playa pequeña entre rocas","Acantilado":"Pared de roca muy alta junto al mar","Arena":"Granos finos que cubren playas y desiertos","Barro":"Tierra mezclada con agua","Roca":"Piedra grande y dura","Piedra":"Trozo duro de mineral","Tierra":"Suelo sobre el que caminamos","Polvo":"Partículas muy finas de tierra","Hierba":"Planta verde que cubre el suelo","Césped":"Hierba cortada de un jardín","Flor":"Parte colorida de una planta","Planta":"Ser vivo que crece en la tierra","Árbol":"Planta grande con tronco y ramas","Arbusto":"Planta con muchas ramas, más baja que un árbol","Hoja":"Parte verde y plana de una planta","Rama":"Parte del árbol que sale del tronco","Raíz":"Parte de la planta que está bajo tierra","Tronco":"Parte principal y central del árbol","Semilla":"De ella nace una planta nueva","Fruto":"Parte de la planta que contiene las semillas","Trigo":"Cereal con el que se hace la harina","Maíz":"Cereal amarillo en forma de mazorca","Girasol":"Flor amarilla que sigue al sol","Amapola":"Flor roja de campo","Rosa":"Flor con espinas, símbolo del amor","Tulipán":"Flor de forma de copa, típica de Holanda","Cactus":"Planta con espinas que vive en el desierto","Palmera":"Árbol alto con hojas en la punta, típico de playas","Pino":"Árbol con hojas en forma de aguja","Roble":"Árbol grande y fuerte, da bellotas","Sol":"Estrella que nos da luz y calor de día","Luna":"Astro que vemos brillar de noche","Estrella":"Punto de luz que se ve en el cielo nocturno","Planeta":"Astro que gira alrededor de una estrella, como la Tierra","Nube":"Vapor de agua que flota en el cielo","Niebla":"Nube muy baja, cerca del suelo","Lluvia":"Agua que cae del cielo","Granizo":"Bolitas de hielo que caen del cielo","Nieve":"Copos blancos y fríos que caen del cielo","Hielo":"Agua congelada","Viento":"Aire que se mueve","Huracán":"Viento muy fuerte y giratorio","Tormenta":"Lluvia fuerte con truenos y rayos","Rayo":"Chispa eléctrica en el cielo durante una tormenta","Arcoíris":"Franjas de colores en el cielo tras la lluvia","Aurora":"Luces de colores en el cielo, típicas del norte","Terremoto":"Sacudida fuerte de la tierra","Tsunami":"Ola gigante causada por un terremoto en el mar","Incendio":"Fuego grande y descontrolado","Humo":"Nube gris que sale del fuego","Fuego":"Llamas que dan luz y calor","Ceniza":"Lo que queda tras quemarse algo","Brasa":"Resto de fuego incandescente, sin llama","Verano":"Estación más calurosa del año","Otoño":"Estación en la que caen las hojas","Invierno":"Estación más fría del año","Primavera":"Estación en la que florecen las plantas","Mañana":"Primera parte del día","Tarde":"Parte del día después del mediodía","Noche":"Parte del día sin luz del sol","Madrugada":"Horas de la noche antes de amanecer","Semana":"Periodo de siete días","Mes":"Periodo de unas cuatro semanas","Año":"Periodo de doce meses","Década":"Periodo de diez años","Pueblo":"Localidad pequeña donde vive poca gente","Aldea":"Pueblo muy pequeño","Ciudad":"Localidad grande con muchos habitantes","Metrópoli":"Ciudad muy grande e importante","Barrio":"Zona dentro de una ciudad","Vecindario":"Conjunto de vecinos de una zona","Castillo":"Construcción antigua con torres, de nobles o reyes","Palacio":"Residencia grande y lujosa","Torre":"Construcción alta y estrecha","Faro":"Torre con luz que guía a los barcos","Puente":"Construcción que cruza un río o un valle","Viaducto":"Puente largo sobre un valle","Iglesia":"Edificio donde se reza","Catedral":"Iglesia principal y muy grande de una ciudad","Plaza":"Espacio abierto en medio de una ciudad","Mercado":"Lugar donde se compran y venden alimentos","Calle":"Vía por la que se camina o circula en una ciudad","Avenida":"Calle ancha y principal","Jardín":"Espacio con plantas y flores para pasear","Huerto":"Terreno donde se cultivan verduras","Escuela":"Lugar donde estudian los niños","Instituto":"Centro donde estudian los adolescentes","Universidad":"Centro de estudios superiores","Academia":"Centro donde se dan clases particulares","Biblioteca":"Lugar con muchos libros para leer o prestar","Librería":"Tienda donde se compran libros","Museo":"Lugar donde se exponen obras de arte u objetos","Galería":"Sala donde se exponen obras de arte","Teatro":"Lugar donde se representan obras en directo","Cine":"Lugar donde se proyectan películas","Hospital":"Lugar donde se atiende a personas enfermas","Clínica":"Centro médico más pequeño que un hospital","Farmacia":"Tienda donde se compran medicinas","Botica":"Nombre antiguo de la farmacia","Supermercado":"Tienda grande de alimentos","Tienda":"Establecimiento donde se compran cosas, o refugio de campaña","Restaurante":"Lugar donde se va a comer","Cafetería":"Lugar donde se toma café y algo ligero","Hotel":"Lugar donde se paga por dormir de viaje","Hostal":"Alojamiento más sencillo que un hotel","Banco":"Lugar donde se guarda y gestiona el dinero","Cajero":"Máquina para sacar dinero en la calle","Gimnasio":"Lugar con máquinas para hacer ejercicio","Piscina":"Lugar con agua para nadar y bañarse","Parque":"Espacio verde para pasear o jugar","Estadio":"Recinto grande donde se juegan partidos","Pabellón":"Recinto cubierto para deportes o eventos","Aeropuerto":"Lugar donde despegan y aterrizan los aviones","Puerto":"Lugar donde atracan los barcos","Garaje":"Lugar donde se guarda el coche","Sótano":"Planta de una casa bajo el nivel del suelo","Balcón":"Saliente de una vivienda con barandilla","Terraza":"Espacio exterior de una vivienda, al aire libre","Escalera":"Se usa para subir o bajar de planta","Ascensor":"Cabina que sube y baja entre plantas","Perro":"Animal doméstico que ladra y mueve la cola","Lobo":"Animal salvaje parecido al perro, vive en manadas","Gato":"Animal doméstico que maúlla","Lince":"Felino salvaje con orejas puntiagudas","Caballo":"Animal grande que se puede montar","Burro":"Animal parecido al caballo, más pequeño y de orejas largas","Vaca":"Animal de granja que da leche","Toro":"Animal de granja con cuernos, macho de la vaca","Oveja":"Animal de granja que da lana","Cabra":"Animal de granja que trepa por las rocas","Cerdo":"Animal de granja rosado, da jamón y chorizo","Jabalí":"Cerdo salvaje que vive en el bosque","Gallina":"Ave de granja que pone huevos","Pavo":"Ave de granja grande, típica de Navidad","Pato":"Ave que nada en estanques y hace 'cuac'","Cisne":"Ave blanca y elegante que nada en lagos","Águila":"Ave de presa grande y poderosa","Halcón":"Ave de presa rápida y pequeña","Búho":"Ave nocturna con ojos grandes","Lechuza":"Ave nocturna parecida al búho","León":"Felino grande, el 'rey de la selva'","Tigre":"Felino grande con rayas negras","Elefante":"El animal terrestre más grande, con trompa","Rinoceronte":"Animal grande con cuerno en la nariz","Jirafa":"Animal con el cuello más largo del mundo","Camello":"Animal del desierto con jorobas","Mono":"Animal que trepa árboles y se parece a nosotros","Chimpancé":"Primate muy inteligente, pariente cercano del humano","Oso":"Animal grande y peludo que vive en el bosque","Panda":"Oso blanco y negro que come bambú","Zorro":"Animal astuto de pelo rojizo","Coyote":"Animal salvaje parecido al lobo, de América","Conejo":"Animal pequeño con orejas largas que salta","Liebre":"Animal parecido al conejo, más grande y rápido","Ardilla":"Animal pequeño que trepa árboles y guarda nueces","Castor":"Animal que construye presas con ramas","Ratón":"Animal pequeño y gris que roe","Hámster":"Roedor pequeño que se tiene como mascota","Serpiente":"Animal reptil sin patas que se arrastra","Lagarto":"Reptil pequeño con cuatro patas","Rana":"Anfibio que salta y vive cerca del agua","Sapo":"Anfibio parecido a la rana, de piel más rugosa","Tortuga":"Reptil con caparazón duro, muy lento","Cangrejo":"Animal marino con pinzas y caparazón","Delfín":"Animal marino muy inteligente y juguetón","Ballena":"El animal marino más grande","Tiburón":"Pez grande y depredador del mar","Orca":"Animal marino grande, blanco y negro","Pulpo":"Animal marino con ocho tentáculos","Calamar":"Animal marino parecido al pulpo, más alargado","Abeja":"Insecto que hace miel y puede picar","Avispa":"Insecto parecido a la abeja, más agresivo","Mariposa":"Insecto de alas coloridas","Polilla":"Insecto parecido a la mariposa, activo de noche","Araña":"Animal con ocho patas que teje telas","Escorpión":"Animal con pinzas y aguijón en la cola","Hormiga":"Insecto pequeño que vive en colonias","Termita":"Insecto que come madera y vive en colonias","Mosca":"Insecto volador muy común","Mosquito":"Insecto volador pequeño que pica","Grillo":"Insecto que canta de noche","Saltamontes":"Insecto verde que salta muy lejos","Cebra":"Animal africano con rayas blancas y negras","Antílope":"Animal africano veloz, con cuernos","Hipopótamo":"Animal grande que vive en ríos africanos","Koala":"Animal australiano que vive en eucaliptos","Canguro":"Animal australiano que salta y lleva crías en bolsa","Pingüino":"Ave que no vuela y vive en zonas frías","Foca":"Animal marino con aletas que vive en costas frías","Morsa":"Animal marino grande con colmillos largos","Nutria":"Animal que vive en ríos y come pescado","Murciélago":"Único mamífero que vuela, activo de noche","Cocodrilo":"Reptil grande de río con mandíbulas fuertes","Caimán":"Reptil parecido al cocodrilo, algo más pequeño","Iguana":"Reptil grande de piel verde","Camaleón":"Reptil que cambia de color","Erizo":"Animal pequeño cubierto de púas","Puercoespín":"Animal con púas más largas que el erizo","Mapache":"Animal con antifaz de pelo oscuro alrededor de los ojos","Tejón":"Animal que vive en madrigueras bajo tierra","Ciervo":"Animal con cuernos ramificados que vive en bosques","Alce":"Animal grande de bosques fríos, con cuernos anchos","Bisonte":"Animal grande y peludo de las llanuras","Búfalo":"Animal grande parecido a la vaca, con cuernos","Manzana":"Fruta roja o verde, redonda","Pera":"Fruta con forma característica, más ancha abajo","Naranja":"Fruta redonda de color naranja y sabor cítrico","Mandarina":"Fruta parecida a la naranja, más pequeña y dulce","Plátano":"Fruta alargada y amarilla","Banana":"Otro nombre para el plátano","Fresa":"Fruta roja pequeña con semillas por fuera","Frambuesa":"Fruta roja pequeña, parecida a la mora","Uva":"Fruta pequeña que crece en racimos","Ciruela":"Fruta redonda, morada o amarilla","Melón":"Fruta grande, redonda y dulce, de verano","Sandía":"Fruta grande, verde por fuera y roja por dentro","Piña":"Fruta tropical con forma de cono y hojas arriba","Mango":"Fruta tropical, dulce y jugosa","Limón":"Fruta amarilla y ácida","Lima":"Fruta verde y ácida, parecida al limón","Cereza":"Fruta roja pequeña y redonda","Guinda":"Fruta parecida a la cereza, algo más ácida","Kiwi":"Fruta pequeña, verde por dentro y peluda por fuera","Aguacate":"Fruta verde y cremosa por dentro","Pan":"Alimento hecho con harina, horneado","Bollo":"Pieza de pan dulce y esponjoso","Queso":"Alimento hecho de leche","Yogur":"Alimento cremoso hecho de leche fermentada","Leche":"Bebida blanca que dan las vacas","Nata":"Parte grasa de la leche, muy cremosa","Mantequilla":"Grasa de leche que se unta en el pan","Margarina":"Sustituto de la mantequilla hecho de aceites vegetales","Huevo":"Alimento que ponen las gallinas","Tortilla":"Plato hecho con huevos batidos","Arroz":"Cereal blanco muy usado en muchos platos","Pasta":"Alimento hecho de harina, como los espaguetis","Patata":"Tubérculo que se cocina de muchas formas","Boniato":"Tubérculo dulce, parecido a la patata","Tomate":"Fruta roja usada como verdura en muchos platos","Pimiento":"Verdura de colores, verde rojo o amarillo","Cebolla":"Verdura que hace llorar al cortarla","Ajo":"Verdura pequeña de sabor fuerte","Zanahoria":"Verdura naranja y alargada","Nabo":"Verdura blanca y redonda","Lechuga":"Verdura verde con hojas, base de la ensalada","Espinaca":"Verdura de hojas verdes","Pepino":"Verdura alargada y verde, muy usada en ensaladas","Calabacín":"Verdura alargada de color verde","Café":"Bebida caliente y estimulante, de color oscuro","Té":"Bebida caliente hecha con hojas infusionadas","Zumo":"Bebida hecha de fruta exprimida","Batido":"Bebida cremosa hecha con leche o fruta","Agua":"Líquido esencial para vivir, sin sabor","Refresco":"Bebida con gas y sabor, normalmente fría","Vino":"Bebida alcohólica hecha de uva","Sidra":"Bebida alcohólica hecha de manzana","Chocolate":"Dulce hecho de cacao","Cacao":"Ingrediente con el que se hace el chocolate","Caramelo":"Golosina dura y dulce","Chicle":"Golosina que se mastica sin tragar","Helado":"Postre frío, típico del verano","Sorbete":"Postre helado hecho con fruta, sin leche","Tarta":"Postre horneado, normalmente redondo","Bizcocho":"Postre esponjoso hecho con harina y huevos","Galleta":"Dulce pequeño y crujiente","Magdalena":"Bollo pequeño y esponjoso","Pizza":"Plato italiano con masa, tomate y queso","Empanada":"Masa rellena, típica de Galicia","Hamburguesa":"Bocadillo con carne picada en forma de disco","Bocadillo":"Pan relleno con algún alimento","Sopa":"Plato caliente y líquido","Caldo":"Líquido caliente hecho al cocer alimentos","Ensalada":"Plato frío hecho con verduras crudas","Guiso":"Plato caliente cocinado a fuego lento","Fútbol":"Deporte de equipo con un balón y dos porterías","Rugby":"Deporte de equipo con balón ovalado y mucho contacto","Baloncesto":"Deporte en el que se encesta un balón en una canasta","Balonmano":"Deporte de equipo donde se lanza el balón con la mano","Tenis":"Deporte con raqueta que se juega sobre una pista","Pádel":"Deporte parecido al tenis, con pala y paredes","Natación":"Deporte que se practica nadando en el agua","Buceo":"Actividad de sumergirse bajo el agua","Ciclismo":"Deporte que se practica en bicicleta","Motociclismo":"Deporte de carreras en moto","Atletismo":"Deporte de correr, saltar y lanzar","Maratón":"Carrera a pie de muy larga distancia","Boxeo":"Deporte de combate a golpes con los puños","Judo":"Arte marcial japonés basado en llaves y derribos","Golf":"Deporte que consiste en meter una pelota en hoyos","Bolos":"Juego en el que se tiran bolas para derribar pinos","Voleibol":"Deporte de equipo con balón y una red","Bádminton":"Deporte con raqueta y un volante en vez de pelota","Esquí":"Deporte de deslizarse sobre nieve con tablas largas","Snowboard":"Deporte de deslizarse sobre nieve con una tabla","Ajedrez":"Juego de mesa con fichas como el rey y la reina","Damas":"Juego de mesa con fichas que se comen saltando","Cartas":"Juego con una baraja","Dominó":"Juego de mesa con fichas rectangulares con puntos","Videojuego":"Juego electrónico que se juega en pantalla","Ordenador":"Máquina electrónica para trabajar, jugar o navegar","Bicicleta":"Vehículo de dos ruedas que se mueve con pedales","Patinete":"Vehículo pequeño con ruedas que se conduce de pie","Puzzle":"Juego de encajar piezas para formar una imagen","Rompecabezas":"Otro nombre para el puzzle","Columpio":"Juego de parque que se balancea","Tobogán":"Juego de parque por el que te deslizas","Triciclo":"Vehículo infantil de tres ruedas","Monopatín":"Tabla con ruedas para deslizarse de pie","Muñeca":"Juguete con forma de persona","Peluche":"Juguete blando relleno, con forma de animal","Pelota":"Objeto redondo para jugar y lanzar","Balón":"Pelota grande usada en deportes de equipo","Cometa":"Juguete que vuela sujeto por un hilo","Globo":"Objeto inflable que flota o se hincha con aire","Malabarista":"Persona que hace juegos de manos con objetos en el aire","Acróbata":"Persona que hace piruetas y equilibrios difíciles","Coche":"Vehículo de cuatro ruedas para circular por carretera","Furgoneta":"Vehículo más grande que un coche, para transportar cosas","Moto":"Vehículo de dos ruedas con motor","Ciclomotor":"Moto pequeña de baja potencia","Tren":"Vehículo que circula sobre raíles","Metro":"Tren subterráneo de las ciudades","Avión":"Vehículo que vuela por el aire con motores","Helicóptero":"Vehículo que vuela con hélices en la parte de arriba","Barco":"Vehículo que navega sobre el agua","Velero":"Barco que se mueve gracias al viento en sus velas","Autobús":"Vehículo grande de transporte público por carretera","Tranvía":"Vehículo público que circula sobre raíles por la ciudad","Camión":"Vehículo grande para transportar mercancías","Tractor":"Vehículo agrícola usado para trabajar la tierra","Taxi":"Coche de transporte que se paga por trayecto","Uber":"Aplicación para pedir un coche con conductor","Submarino":"Vehículo que navega bajo el agua","Galeón":"Barco antiguo grande, usado por los piratas","Ancla":"Objeto pesado que sujeta un barco al fondo","Timón":"Se usa para dirigir un barco","Vela":"Tela grande que impulsa un barco con el viento","Remo":"Se usa para mover una barca con las manos","Muelle":"Lugar del puerto donde amarran los barcos","Médico":"Profesional que cura enfermedades","Enfermero":"Profesional que cuida a los pacientes en el hospital","Profesor":"Persona que enseña en la escuela","Maestro":"Profesor de los primeros años de colegio","Bombero":"Profesional que apaga incendios y rescata personas","Policía":"Profesional que vela por la seguridad y el orden","Cocinero":"Persona que prepara la comida","Camarero":"Persona que sirve en un bar o restaurante","Peluquero":"Profesional que corta y arregla el pelo","Barbero":"Peluquero especializado en hombres","Carpintero":"Profesional que trabaja con madera","Fontanero":"Profesional que arregla tuberías y grifos","Electricista":"Profesional que instala y arregla cables y luz","Mecánico":"Profesional que arregla coches y motores","Pintor":"Artista que hace cuadros, o profesional que pinta paredes","Escultor":"Artista que hace figuras en piedra, madera o metal","Músico":"Persona que toca un instrumento o compone canciones","Cantante":"Persona que canta canciones","Actor":"Persona que interpreta personajes en cine o teatro","Director":"Persona que dirige una película, obra o empresa","Periodista":"Profesional que informa de noticias","Escritor":"Persona que escribe libros","Abogado":"Profesional que defiende a personas ante la ley","Juez":"Persona que decide sentencias en un juicio","Piloto":"Persona que conduce aviones","Astronauta":"Persona que viaja al espacio","Granjero":"Persona que trabaja la tierra y cría animales","Pastor":"Persona que cuida rebaños de ovejas o cabras","Pescador":"Persona que pesca para vivir","Cazador":"Persona que caza animales","Soldado":"Persona que forma parte de un ejército","General":"El rango más alto de un ejército","Veterinario":"Médico que cuida a los animales","Biólogo":"Científico que estudia los seres vivos","Arquitecto":"Profesional que diseña edificios","Ingeniero":"Profesional que diseña y construye estructuras o máquinas","Bailarín":"Persona que baila como profesión o afición","Coreógrafo":"Persona que diseña los pasos de un baile","Detective":"Persona que investiga misterios y delitos","Investigador":"Persona que busca respuestas a un caso o problema","Buzo":"Persona que se sumerge bajo el agua con equipo especial","Nadador":"Persona que practica la natación","Escalador":"Persona que sube montañas o paredes de roca","Alpinista":"Persona que escala montañas altas","Fotógrafo":"Persona que hace fotografías","Traductor":"Persona que traduce de un idioma a otro","Intérprete":"Persona que traduce en directo, hablando","Panadero":"Persona que hace y vende pan","Pastelero":"Persona que hace tartas y dulces","Sastre":"Persona que hace y arregla trajes a medida","Modisto":"Diseñador de ropa","Recepcionista":"Persona que atiende la entrada de un hotel u oficina","Rey":"Gobernante de un reino, hombre","Príncipe":"Hijo de un rey, futuro gobernante","Reina":"Gobernante de un reino, mujer","Princesa":"Hija de una reina o rey","Bruja":"Mujer con poderes mágicos, a veces malvada","Hechicera":"Mujer que usa hechizos y magia","Mago":"Persona que hace magia o trucos","Hada":"Ser mágico pequeño y con alas","Dragón":"Criatura mitológica grande que escupe fuego","Unicornio":"Caballo mágico con un cuerno en la frente","Fantasma":"Espíritu de alguien que ya murió","Vampiro":"Criatura que se alimenta de sangre y teme la luz","Zombi":"Muerto viviente de las películas de terror","Momia":"Cuerpo antiguo envuelto en vendas, del antiguo Egipto","Monstruo":"Criatura grande y aterradora, normalmente inventada","Ogro":"Gigante feo y bruto de los cuentos","Gigante":"Ser enorme, mucho más grande que una persona","Duende":"Ser mágico pequeño y travieso","Pirata":"Persona que robaba barcos en el mar, con parche y tesoro","Vikingo":"Guerrero antiguo del norte de Europa","Caballero":"Guerrero medieval con armadura, servía a un rey","Guerrero":"Persona que lucha en batallas","Robot":"Máquina que puede moverse y hacer tareas","Androide":"Robot con forma de persona","Alien":"Ser que viene de otro planeta","Extraterrestre":"Otro nombre para el alien","Superhéroe":"Personaje con poderes que ayuda a la gente","Villano":"Personaje malo de una historia","Payaso":"Personaje que hace reír, normalmente en un circo","Mimo":"Artista que actúa sin hablar, solo con gestos","Sirena":"Criatura mitad mujer, mitad pez","Tritón":"Criatura marina masculina, parecida a la sirena","Kraken":"Monstruo marino gigante con tentáculos","Leviatán":"Monstruo marino enorme de la mitología","Trasno":"Duende travieso de la mitología gallega","Meiga":"Bruja de la tradición gallega","Lobishome":"Hombre lobo de la mitología gallega","Hombre lobo":"Persona que se transforma en lobo","Mouro":"Gigante mitológico de la tradición gallega","Santa Compaña":"Procesión de almas en la mitología gallega","Mesa":"Mueble con patas y una superficie plana","Silla":"Mueble para sentarse, con respaldo","Sofá":"Mueble blando para sentarse varias personas","Sillón":"Silla grande y cómoda, individual","Cama":"Mueble donde se duerme","Litera":"Cama doble, una encima de otra","Armario":"Mueble donde se guarda la ropa","Cajón":"Compartimento que se abre tirando, dentro de un mueble","Espejo":"Superficie donde se refleja tu imagen","Cuadro":"Obra de arte que se cuelga en la pared","Cortina":"Tela que cubre una ventana","Persiana":"Cubre la ventana y se sube o baja","Alfombra":"Tela que cubre el suelo","Manta":"Tela gruesa para taparse y dar calor","Lámpara":"Objeto que da luz artificial","Jacuzzi":"Bañera con burbujas de hidromasaje","Bañera":"Se usa para bañarse dentro, llena de agua","Puerta":"Se abre y cierra para entrar o salir","Ventana":"Hueco en la pared con cristal, para ver afuera","Techo":"Parte de arriba de una habitación","Suelo":"Parte de abajo de una habitación, donde se camina","Pared":"Estructura vertical que separa espacios","Tejado":"Parte de arriba de un edificio, por fuera","Cocina":"Habitación donde se prepara la comida","Comedor":"Habitación donde se come","Baño":"Habitación con ducha, váter y lavabo","Ducha":"Se usa para lavarse de pie con agua","Llave":"Objeto para abrir o cerrar una cerradura","Cerradura":"Mecanismo que se abre con una llave","Teléfono":"Aparato para llamar o comunicarse","Tableta":"Dispositivo electrónico plano, más grande que un móvil","Televisión":"Aparato en el que se ven programas y películas","Radio":"Aparato en el que se escuchan emisoras","Portátil":"Ordenador que se puede transportar fácilmente","Cámara":"Aparato para hacer fotos o vídeos","Videocámara":"Cámara especializada en grabar vídeo","Reloj":"Aparato que marca la hora","Despertador":"Reloj que suena para despertarte","Gafas":"Se ponen en los ojos para ver mejor","Lentillas":"Lentes que se ponen directamente sobre el ojo","Paraguas":"Se abre para protegerse de la lluvia","Chubasquero":"Prenda impermeable para la lluvia","Bolso":"Se usa para llevar cosas, con asas","Cartera":"Objeto pequeño para llevar dinero y tarjetas","Zapatos":"Calzado que se pone en los pies","Zapatillas":"Calzado deportivo o cómodo para estar en casa","Botas":"Calzado que cubre hasta el tobillo o más arriba","Sandalias":"Calzado abierto, típico del verano","Camiseta":"Prenda de manga corta para la parte de arriba","Camisa":"Prenda con botones y cuello, más formal","Pantalón":"Prenda que cubre las piernas por separado","Falda":"Prenda que cubre las piernas sin separarlas","Chaqueta":"Prenda de abrigo que se pone sobre la ropa","Abrigo":"Prenda de abrigo larga, para el frío","Gorro":"Prenda que cubre la cabeza","Sombrero":"Prenda para la cabeza, con ala alrededor","Bufanda":"Prenda larga para abrigar el cuello","Guantes":"Prenda que cubre las manos","Cinturón":"Se pone en la cintura para sujetar el pantalón","Corbata":"Prenda que se anuda al cuello, con la camisa","Pijama":"Ropa que se usa para dormir","Bañador":"Ropa que se usa para bañarse","Anillo":"Joya que se lleva en el dedo","Pulsera":"Joya que se lleva en la muñeca","Collar":"Joya que se lleva alrededor del cuello","Pendiente":"Joya que se lleva en la oreja","Lápiz":"Se usa para escribir o dibujar, se puede borrar","Bolígrafo":"Se usa para escribir con tinta","Cuaderno":"Conjunto de hojas para escribir o dibujar","Libreta":"Cuaderno pequeño","Libro":"Conjunto de páginas encuadernadas con una historia o información","Cómic":"Historia contada con dibujos y viñetas","Revista":"Publicación periódica con artículos y fotos","Periódico":"Publicación diaria con noticias","Mochila":"Se usa a la espalda para llevar cosas","Estuche":"Se usa para guardar lápices y material escolar","Tijeras":"Sirven para cortar papel o tela","Pegamento":"Sirve para pegar cosas","Regla":"Sirve para medir o trazar líneas rectas","Compás":"Sirve para dibujar círculos","Pizarra":"Superficie en la que se escribe con tiza o rotulador","Rotulador":"Se usa para escribir o dibujar con tinta de color","Guitarra":"Instrumento de cuerda que se toca con los dedos","Violín":"Instrumento de cuerda que se toca con un arco","Piano":"Instrumento de teclas, blancas y negras","Teclado":"Instrumento musical electrónico con teclas","Batería":"Instrumento de percusión con tambores y platos","Tambor":"Instrumento de percusión que se golpea","Flauta":"Instrumento de viento, alargado","Trompeta":"Instrumento de viento metálico","Micrófono":"Se usa para amplificar la voz","Altavoz":"Aparato que emite sonido","Escultura":"Obra de arte en tres dimensiones","Pincel":"Se usa para pintar con pintura","Paleta":"Superficie donde el pintor mezcla los colores","Cumpleaños":"Día en que se celebra el nacimiento de alguien","Aniversario":"Día en que se celebra que pasó un año de algo","Navidad":"Fiesta de finales de diciembre","Reyes":"Fiesta del 6 de enero, con regalos","Boda":"Ceremonia en la que dos personas se casan","Bautizo":"Ceremonia religiosa para un bebé","Fiesta":"Celebración con gente reunida","Verbena":"Fiesta popular al aire libre, típica de verano","Vacaciones":"Días libres sin trabajo ni colegio","Excursión":"Salida de un día a algún lugar","Viaje":"Desplazamiento a otro lugar, normalmente lejano","Ruta":"Camino planeado para llegar a un destino","Maleta":"Se usa para llevar ropa cuando se viaja","Mapa":"Dibujo que representa un territorio","Brújula":"Instrumento que señala el norte","Pasaporte":"Documento necesario para viajar a otros países","Billete":"Entrada para viajar en tren, avión o similar","Camping":"Lugar al aire libre donde se acampa","Refugio":"Lugar donde protegerse, a veces en la montaña","Caravana":"Vehículo con espacio para vivir y dormir","Hoguera":"Fuego grande hecho al aire libre","Barbacoa":"Se usa para asar comida al aire libre","Corona":"Se pone en la cabeza de un rey o reina","Cetro":"Bastón de mando de un rey","Tesoro":"Conjunto de objetos valiosos, a veces escondido","Cofre":"Caja donde se guardan objetos valiosos","Moneda":"Pieza de metal usada como dinero","Joya":"Objeto de valor, normalmente de metal precioso","Pergamino":"Papel antiguo, enrollado","Manuscrito":"Texto escrito a mano","Arrecife":"Formación de coral bajo el mar","Atolón":"Isla en forma de anillo con una laguna dentro","Espada":"Arma antigua con hoja larga","Puñal":"Arma con hoja corta, como un cuchillo","Escudo":"Se usa para protegerse de golpes o flechas","Armadura":"Traje metálico de protección de los caballeros","Flecha":"Se dispara con un arco","Lanza":"Arma antigua larga con punta afilada","Chimenea":"Se usa para hacer fuego dentro de una casa","Estufa":"Aparato que da calor","Termómetro":"Mide la temperatura","Barómetro":"Mide la presión del aire, ayuda a predecir el tiempo","Shrek":"Ogro verde y gruñón que vive en un pantano","Hulk":"Superhéroe verde y enorme que se transforma con la ira","Yoda":"Maestro Jedi pequeño y muy sabio, de Star Wars","el Grinch":"Personaje verde y gruñón que odia la Navidad","Piccolo":"Guerrero verde con orejas puntiagudas, de Dragon Ball","Mike Wazowski":"Monstruo verde con un solo ojo grande, de Monstruos S.A.","Gary el caracol":"Caracol mascota de Bob Esponja","Peter Pan":"Niño que nunca crece y vuela por Nunca Jamás","Link":"Héroe con ropa verde de la saga Zelda","Superman":"Superhéroe que vuela, viste de azul y rojo, de Krypton","Batman":"Superhéroe murciélago que protege Gotham de noche","Thor":"Dios del trueno con un martillo mágico","Doctor Strange":"Hechicero de Marvel que controla la magia y el tiempo","Vegeta":"Guerrero orgulloso y rival de Goku, de Dragon Ball","Mickey Mago":"Ratón famoso vestido de mago con sombrero de estrellas","Harry Potter":"Joven mago con gafas y una cicatriz en forma de rayo","El Primo":"Personaje enorme y fuerte de Brawl Stars","Saitama":"Héroe calvo tan fuerte que vence a todos de un puñetazo","Goku":"Guerrero saiyan protagonista de Dragon Ball","Hércules":"Héroe griego con una fuerza sobrehumana","Maui":"Semidiós fuerte y presumido, de la película Moana","Iron Man":"Superhéroe con una armadura tecnológica roja y dorada","Buzz Lightyear":"Astronauta de juguete que dice 'hasta el infinito y más allá'","Dumbo":"Elefantito con orejas enormes que aprende a volar","Pegaso":"Caballo alado de la mitología griega","Campanilla":"Hada diminuta y voladora, amiga de Peter Pan","Elsa":"Reina que controla el hielo, de la película Frozen","Iceman":"Mutante de X-Men que controla y crea hielo","Sub-Zero":"Guerrero de hielo del videojuego Mortal Kombat","un muñeco de nieve":"Figura hecha con bolas de nieve apiladas","Killer Frost":"Supervillana con poderes de hielo, de DC","Antorcha Humana":"Superhéroe de los 4 Fantásticos que se envuelve en llamas","Natsu":"Mago que escupe fuego, protagonista de Fairy Tail","Charmander":"Pokémon lagarto naranja con una llama en la cola","un dragón escupefuego":"Criatura fantástica que lanza llamas por la boca","Zuko":"Príncipe con poderes de fuego, de Avatar","Ace":"Pirata que controla el fuego, hermano de Luffy en One Piece","Darth Vader":"Villano con capa negra y respiración pesada, de Star Wars","Sauron":"Señor Oscuro que forjó el Anillo Único, de El Señor de los Anillos","Maléfica":"Bruja malvada con cuernos, villana de la Bella Durmiente","Úrsula":"Bruja del mar con tentáculos, villana de la Sirenita","Joker":"Villano payaso y caótico, enemigo de Batman","el Duende Verde":"Villano de Spider-Man con una planeadora y bombas","Thanos":"Villano morado que busca las Gemas del Infinito","Bowser":"Villano tortuga gigante que secuestra a la princesa Peach","Gargamel":"Malvado que persigue a los Pitufos","Eggman":"Científico villano enemigo de Sonic","Ariel":"Sirena pelirroja que quiere ser humana","Moana":"Joven navegante que cruza el océano en canoa","Bella":"Joven que se enamora de la Bestia y ama los libros","Rapunzel":"Princesa de pelo mágico y muy largo","Blancanieves":"Princesa que come una manzana envenenada","la Princesa Aurora":"Princesa que duerme un sueño encantado, la Bella Durmiente","Sherlock Holmes":"Detective británico muy observador, con lupa y pipa","Scooby-Doo":"Perro grandullón que resuelve misterios con sus amigos","Indiana Jones":"Aventurero con sombrero y látigo que busca tesoros","Lara Croft":"Aventurera de videojuegos que explora tumbas","Tintín":"Joven reportero de cómic que viaja por el mundo","Dora la Exploradora":"Niña exploradora de dibujos animados con su mochila","Mickey Mouse":"Ratón sonriente, símbolo de Disney","Jerry":"Ratón que siempre engaña al gato Tom","Pikachu":"Pokémon amarillo con mejillas eléctricas","Sonic":"Erizo azul superveloz de videojuegos","Stuart Little":"Ratón pequeño que vive como un niño humano","Remy":"Ratón que sueña con ser gran chef, de Ratatouille","Anna":"Princesa valiente, hermana de Elsa en Frozen","Woody":"Vaquero de juguete, protagonista de Toy Story","Simba":"León pequeño que será rey, de El Rey León","Mufasa":"Rey león sabio, padre de Simba","Nemo":"Pececito naranja que se pierde en el océano","Dory":"Pez azul con mala memoria, amiga de Nemo","Mickey":"Ratón sonriente, símbolo de Disney","Minnie":"Ratona con lazo, pareja de Mickey","Donald":"Pato con mal carácter y voz chillona","Daisy":"Princesa del Reino Sarasaland, amiga de Peach","Mirabel":"Chica sin poder mágico en su familia, de Encanto","Isabela":"Prima perfecta que hace florecer plantas, de Encanto","Flynn Rider":"Ladrón encantador que ayuda a Rapunzel","Olaf":"Muñeco de nieve parlanchín, de Frozen","Sven":"Reno fiel de la película Frozen","Emile":"Hermano de Remy que también come de todo, en Ratatouille","Sulley":"Monstruo peludo y azul de Monstruos S.A.","Lightning McQueen":"Coche de carreras rojo, protagonista de Cars","Mate":"Grúa oxidada y torpe, amigo de Rayo McQueen","la Bestia":"Príncipe convertido en monstruo por un hechizo","Aladdín":"Joven ladrón que encuentra una lámpara mágica","Jasmine":"Princesa de Agrabah que quiere libertad","el Genio":"Ser mágico azul que concede tres deseos","Hades":"Dios del inframundo, villano de Hércules","Garfio":"Pirata con gancho en vez de mano, enemigo de Peter Pan","Bambi":"Cervatillo protagonista de una película Disney","Stitch":"Alienígena azul travieso y cariñoso","Toothless":"Dragón negro sin dientes visibles, de Cómo Entrenar a tu Dragón","Alegría":"Emoción amarilla y optimista, de Del Revés","Tristeza":"Emoción azul siempre triste, de Del Revés","War Machine":"Superhéroe con armadura pesada, amigo de Iron Man","Capitán América":"Superhéroe con escudo redondo y traje patriótico","Capitana Marvel":"Superheroína con poderes cósmicos y muy fuerte","Loki":"Dios del engaño, hermano adoptivo de Thor","Spider-Man":"Superhéroe que lanza telarañas y trepa paredes","Miles Morales":"Otro joven que también se convierte en Spider-Man","Hulka":"Versión femenina de Hulk, verde y fuerte","Viuda Negra":"Espía y superheroína experta en combate","Ojo de Halcón":"Superhéroe que nunca falla un disparo con arco","Escarlata":"Superheroína con poderes mágicos rojos","Pantera Negra":"Rey y superhéroe protector de Wakanda","Killmonger":"Villano que reclama el trono de Wakanda","Lobezno":"Mutante con garras de metal que se cura solo","Dientes de Sable":"Villano mutante rival de Lobezno","Charles Xavier":"Líder telépata de los X-Men, en silla de ruedas","Magneto":"Mutante que controla el metal, antiguo amigo de Xavier","Tormenta (X-Men)":"Mutante que controla el clima y el rayo","Groot":"Criatura de árbol que solo dice su propio nombre","Rocket":"Mapache parlanchín y armado, de Guardianes de la Galaxia","Star-Lord":"Líder humano de los Guardianes de la Galaxia","Gamora":"Guerrera verde, una de los Guardianes de la Galaxia","Deadpool":"Antihéroe con traje rojo que rompe la cuarta pared","Mario":"Fontanero con gorra roja, el más famoso de los videojuegos","Luigi":"Hermano más alto y tímido de Mario","Donkey Kong":"Gorila gigante de videojuegos clásico","Yoshi":"Dinosaurio verde amigo de Mario","Toad":"Personaje con cabeza de champiñón, amigo de Mario","Peach":"Princesa del Reino Champiñón","Kirby":"Personaje rosa y redondo que se traga a los enemigos","Jigglypuff":"Pokémon rosa y redondo que canta para dormir","Zelda":"Princesa de un reino mágico, de la saga Zelda","Raichu":"Evolución eléctrica de Pikachu","Creeper":"Criatura verde de Minecraft que explota","Enderman":"Criatura alta y negra de Minecraft que se teletransporta","Steve":"Personaje humano por defecto de Minecraft","Alex":"Otra skin humana por defecto de Minecraft","Esqueleto":"Enemigo de Minecraft que dispara flechas","Espada de diamante":"Arma fuerte de Minecraft hecha con diamantes","Pico de diamante":"Herramienta fuerte de Minecraft para minar","Aldeano":"Personaje pacífico de Minecraft que comercia","Piglin":"Criatura de Minecraft parecida a un cerdo, del Inframundo","Shelly":"Personaje inicial de Brawl Stars con una escopeta","Colt":"Personaje de Brawl Stars con dos pistolas","Leon":"Personaje de Brawl Stars que se vuelve invisible","Crow":"Personaje de Brawl Stars con dagas venenosas","Bull":"Personaje tanque de Brawl Stars con escopeta","Spike":"Cactus personaje de Brawl Stars","Sandy":"Personaje de Brawl Stars relacionado con el sueño y la arena","Poco":"Personaje músico de Brawl Stars que cura al equipo","Bo":"Personaje de Brawl Stars experto en trampas","Mortis":"Personaje vampiro de Brawl Stars","Edgar":"Personaje de Brawl Stars que recupera vida al golpear","Fortnite":"Videojuego de batalla royale con construcción","PUBG":"Videojuego de batalla royale realista","Tails":"Zorro volador de dos colas, amigo de Sonic","Knuckles":"Equidna rojo y fuerte, rival de Sonic","Stumble Guys":"Videojuego de carreras de obstáculos con personajes torpes","Fall Guys":"Videojuego de minijuegos y obstáculos coloridos","el tripulante de Among Us":"Personaje que hace tareas en la nave, de Among Us","el impostor de Among Us":"Personaje que se hace pasar por tripulante y sabotea","Pac-Man":"Personaje amarillo que come puntos y huye de fantasmas","Blinky":"Fantasma rojo enemigo de Pac-Man","un personaje de Roblox":"Avatar cuadrado y personalizable del juego Roblox","Luffy":"Pirata de goma que quiere ser el Rey de los Piratas","Zoro":"Espadachín de tres katanas, tripulante de Luffy","Naruto":"Ninja rubio y hiperactivo que sueña con ser líder de su aldea","Sasuke":"Ninja rival y amigo de Naruto","Tanjiro":"Joven cazador de demonios con una cicatriz en la frente","Zenitsu":"Cazador de demonios miedoso pero rápido como el rayo","Nezuko":"Hermana de Tanjiro convertida en demonio","Gojo":"Poderoso profesor hechicero con los ojos vendados","Yuji":"Joven que se convierte en hechicero, de Jujutsu Kaisen","Ash":"Entrenador que viaja con Pikachu, de Pokémon","Misty":"Entrenadora experta en Pokémon de agua","Doraemon":"Gato robot azul del futuro sin orejas","el Gato con Botas":"Gato astuto con botas que ayuda a su amo","Shin-chan":"Niño travieso de dibujos japoneses","Nobita":"Niño despistado amigo de Doraemon","Sailor Moon":"Guerrera mágica con uniforme escolar y poderes lunares","una Guerrera Winx":"Hada guerrera de la serie Winx Club","Bob Esponja":"Esponja amarilla que vive en una piña bajo el mar","Patricio":"Estrella de mar rosa, mejor amigo de Bob Esponja","Calamardo":"Vecino gruñón de Bob Esponja que toca el clarinete","Tom":"Gato que persigue sin descanso al ratón Jerry","Bugs Bunny":"Conejo gris que dice '¿Qué hay de nuevo, viejo?'","el Pato Lucas":"Pato con problemas para hablar bien, rival de Bugs Bunny","Phineas":"Niño inventor que construye cosas increíbles cada verano","Ferb":"Hermano callado e ingenioso de Phineas","Dipper":"Niño curioso que investiga misterios en Gravity Falls","Mabel":"Hermana gemela alegre de Dipper","Gumball":"Gato azul de dibujos animados con vida disparatada","Darwin":"Pez con patas, mejor amigo de Gumball","Homer Simpson":"Padre despistado y amarillo de una familia de dibujos","Peter Griffin":"Padre torpe y gracioso de otra familia de dibujos","Bart Simpson":"Niño travieso y de pelo puntiagudo, hijo de Homer","Lisa Simpson":"Niña inteligente que toca el saxofón, hermana de Bart","Gadget":"Otro personaje robótico parecido a Doraemon","Bombón":"Superheroína rosa y líder de las Supernenas","Bellota":"Superheroína dura y luchadora de las Supernenas","Shaggy":"Joven despeinado y hambriento, amigo de Scooby-Doo","Papá Pitufo":"Pitufo mayor, con barba blanca y gorro rojo","Robin":"Ayudante joven de Batman","Harley Quinn":"Villana traviesa vestida de rojo y azul, del universo de Batman","Flash":"Superhéroe extremadamente veloz, viste de rojo","Quicksilver":"Superhéroe de Marvel también muy veloz","Aquaman":"Superhéroe que domina los mares","Namor":"Príncipe submarino de Marvel, rival de superhéroes","Wonder Woman":"Superheroína guerrera con lazo mágico","Green Lantern":"Superhéroe con un anillo que crea cualquier cosa","Catwoman":"Ladrona con traje de gato, a veces enemiga de Batman","Black Cat":"Ladrona con traje felino del universo de Spider-Man","Caperucita Roja":"Niña con capa roja que visita a su abuela por el bosque","el Lobo Feroz":"Lobo malvado de varios cuentos clásicos","la Bella Durmiente":"Princesa que duerme cien años por un hechizo","su madrastra":"Familiar que trata mal a la protagonista en varios cuentos","Pinocho":"Muñeco de madera al que le crece la nariz si miente","los Tres Cerditos":"Hermanos que construyen casas de paja, madera y ladrillo","el Lobo":"Animal que sopla las casas en el cuento de los tres cerditos","Hansel":"Niño perdido en el bosque junto a su hermana","Gretel":"Hermana de Hansel, perdida en el bosque","el Marqués de Carabás":"Título falso que el gato le da a su amo en el cuento","Aladino":"Joven que encuentra una lámpara con un genio dentro","el genio":"Ser mágico que concede deseos al salir de una lámpara","la bruja":"Personaje que hechiza o encierra en muchos cuentos","el Patito Feo":"Patito distinto a los demás que se convierte en cisne","el cisne":"Ave elegante en la que se transforma el patito feo","Hidra":"Serpiente con varias cabezas que vuelven a crecer","Fénix":"Ave mágica que renace de sus cenizas","Grifo":"Criatura con cuerpo de león y cabeza de águila","Esfinge":"Criatura con cuerpo de león y cabeza humana que hace acertijos","Minotauro":"Criatura con cuerpo humano y cabeza de toro","Centauro":"Criatura mitad humano, mitad caballo","Cíclope":"Gigante con un solo ojo en la frente","Serpiente marina":"Criatura larga y marina de los mitos","Cerbero":"Perro gigante de tres cabezas que vigila el inframundo","Lobo de tres cabezas":"Criatura fantástica parecida a Cerbero","Medusa":"Criatura con serpientes en vez de pelo que petrifica con la mirada","Gorgona":"Criatura mitológica de la que Medusa es la más famosa","Troll":"Criatura grande y bruta que suele vivir bajo puentes","Yeti":"Criatura peluda y gigante de las montañas nevadas","Pie Grande":"Criatura legendaria y peluda de los bosques americanos","Varita mágica":"Objeto delgado con el que los magos hacen hechizos","Bastón de mago":"Objeto largo con el que los magos canalizan magia","Alfombra voladora":"Alfombra mágica que vuela, como la de Aladdín","Escoba voladora":"Objeto en el que vuelan las brujas","Espada mágica":"Arma encantada con poderes especiales","Escudo mágico":"Objeto de protección con poderes especiales","Anillo mágico":"Joya con poderes especiales, como el de El Señor de los Anillos","Medallón mágico":"Colgante con poderes especiales","Poción mágica":"Líquido que provoca un efecto mágico al bebérselo","Hechizo":"Palabras o gestos mágicos que provocan un efecto","Bola de cristal":"Objeto redondo usado para predecir el futuro","Espejo mágico":"Objeto que puede hablar o mostrar cosas ocultas","Castillo encantado":"Fortaleza con magia, habitada por seres fantásticos","Torre del mago":"Construcción alta donde vive o estudia un mago","Mazmorra":"Espacio subterráneo lleno de peligros y tesoros","Laberinto":"Construcción con caminos confusos, difícil de recorrer","Escuela de magia":"Centro donde se estudia y practica la magia","Academia de hechiceros":"Otro nombre para una escuela de magia","Tesoro pirata":"Cofre lleno de monedas y joyas escondido por piratas","Cofre del dragón":"Tesoro guardado y protegido por un dragón","Gnomo":"Ser pequeño y mágico que vive bajo tierra","Procesión de fantasmas":"Grupo de espíritus que caminan de noche","Nubeiro":"Ser de la mitología gallega que controla las tormentas","Mago del tiempo":"Ser fantástico que controla el clima","Olláparo":"Gigante de un solo ojo de la mitología gallega","Sirena de las Rías":"Sirena propia de las costas gallegas","Apalpador":"Gigante carbonero que trae regalos en Navidad en Galicia","Papá Noel":"Anciano de barba blanca que reparte regalos en Navidad","Basilisco":"Criatura reptil legendaria y venenosa","Torre Eiffel":"Torre de metal muy alta en París","Torre de Pisa":"Torre italiana famosa por estar inclinada","el Big Ben":"Torre del reloj más famosa de Londres","Big Ben":"Torre del reloj más famosa de Londres","el reloj de una plaza":"Reloj grande que suele estar en el centro de un pueblo","Burj Khalifa":"El edificio más alto del mundo, en Dubái","Empire State Building":"Rascacielos histórico y famoso de Nueva York","Estatua de la Libertad":"Estatua gigante con una antorcha, en Nueva York","Cristo Redentor":"Estatua enorme de Jesús con los brazos abiertos, en Río de Janeiro","Coliseo":"Anfiteatro antiguo de Roma donde luchaban los gladiadores","Partenón":"Templo griego antiguo en la Acrópolis de Atenas","Pirámides de Egipto":"Grandes construcciones triangulares de piedra en Egipto","Pirámides mayas":"Construcciones escalonadas de piedra en América Central","Gran Muralla China":"Larguísima muralla antigua que recorre China","Muralla de Ávila":"Muralla medieval muy bien conservada en España","Machu Picchu":"Antigua ciudad inca en lo alto de una montaña peruana","Petra":"Antigua ciudad tallada en la roca, en Jordania","Stonehenge":"Círculo de grandes piedras antiguas en Inglaterra","un dolmen":"Monumento antiguo hecho con grandes piedras","Esfinge de Guiza":"Estatua egipcia con cuerpo de león y cabeza humana","una esfinge griega":"Criatura mitológica con cuerpo de león y cabeza humana","Sagrada Familia":"Iglesia inacabada y muy famosa de Barcelona","Catedral de Santiago":"Iglesia principal de Santiago de Compostela","Notre Dame":"Catedral gótica muy famosa de París","Mezquita de Córdoba":"Antigua mezquita con arcos, en Córdoba","la Alhambra":"Palacio y fortaleza árabe en Granada","Acueducto de Segovia":"Puente romano antiguo que llevaba agua a Segovia","un puente romano":"Puente antiguo construido por los romanos","Taj Mahal":"Palacio de mármol blanco muy famoso en la India","París":"Capital de Francia, con la Torre Eiffel","Londres":"Capital de Reino Unido, con el Big Ben","Madrid":"Capital de España","Barcelona":"Ciudad española con la Sagrada Familia","Nueva York":"Ciudad de Estados Unidos con muchos rascacielos","Chicago":"Ciudad de Estados Unidos famosa por sus rascacielos","Roma":"Capital de Italia, con el Coliseo","Atenas":"Capital de Grecia, con la Acrópolis","Tokio":"Capital de Japón","Seúl":"Capital de Corea del Sur","Venecia":"Ciudad italiana que se recorre en barca por sus canales","Ámsterdam":"Capital de Holanda, con muchos canales","Río de Janeiro":"Ciudad brasileña con el Cristo Redentor","Sídney":"Ciudad australiana famosa por su ópera junto al mar","El Cairo":"Capital de Egipto, cerca de las pirámides","Dubái":"Ciudad de los Emiratos Árabes con edificios muy altos","Santiago de Compostela":"Ciudad gallega con una catedral muy famosa","Lugo":"Ciudad gallega rodeada por una muralla romana","La Coruña":"Ciudad costera de Galicia","Vigo":"Ciudad costera de Galicia, muy industrial","Sevilla":"Ciudad andaluza con la Giralda","Granada":"Ciudad andaluza con la Alhambra","Moscú":"Capital de Rusia","San Petersburgo":"Ciudad rusa con muchos palacios","Lamine Yamal":"Joven futbolista español extremo del Barça","Nico Williams":"Futbolista español extremo del Athletic Club","Messi":"Futbolista argentino considerado de los mejores de la historia","Cristiano Ronaldo":"Futbolista portugués muy goleador","FC Barcelona":"Club de fútbol español, conocido como el Barça","Real Madrid":"Club de fútbol español muy laureado","Balón de baloncesto":"Pelota naranja usada en baloncesto","Balón de fútbol":"Pelota blanca y negra usada en fútbol","Portero":"Jugador que defiende la portería","Delantero":"Jugador que intenta marcar goles","Mundial":"Competición de selecciones nacionales cada 4 años","Eurocopa":"Competición de selecciones europeas de fútbol","Fórmula 1":"Categoría de carreras de coches más rápidos del mundo","MotoGP":"Categoría de carreras de motos más rápidas del mundo","Rafa Nadal":"Tenista español, muchas veces campeón de Roland Garros","Carlos Alcaraz":"Joven tenista español, número uno del mundo","LeBron James":"Jugador de baloncesto estadounidense muy famoso","Michael Jordan":"Leyenda histórica del baloncesto estadounidense","Estadio Bernabéu":"Estadio del Real Madrid","Camp Nou":"Estadio del FC Barcelona","Árbitro":"Persona que dirige y controla un partido","Entrenador":"Persona que dirige y prepara a un equipo","una estrella":"Astro que brilla con luz propia","un satélite":"Objeto que orbita alrededor de un planeta","Marte":"Planeta rojo, el cuarto del sistema solar","Venus":"Planeta muy caliente, el segundo del sistema solar","Transbordador espacial":"Nave reutilizable que viaja al espacio","Cosmonauta":"Nombre ruso para astronauta","Estrella fugaz":"Rastro luminoso al cruzar un meteoro el cielo","Cometa espacial":"Cuerpo helado con cola brillante que orbita el Sol","Agujero negro":"Región del espacio con gravedad tan fuerte que nada escapa","Estrella de neutrones":"Resto muy denso de una estrella que explotó","Saturno":"Planeta con anillos muy vistosos","Júpiter":"El planeta más grande del sistema solar","Satélite":"Objeto que orbita alrededor de un planeta","Estación Espacial":"Estructura habitable que orbita la Tierra","Nave espacial":"Vehículo que viaja por el espacio","Galaxia":"Enorme conjunto de estrellas, como la Vía Láctea","Nebulosa":"Nube de gas y polvo en el espacio","Tiranosaurio Rex":"Dinosaurio carnívoro enorme con dientes afilados","Giganotosaurio":"Dinosaurio carnívoro incluso más grande que el T-Rex","Velociraptor":"Dinosaurio pequeño, veloz y muy inteligente","Deinonychus":"Dinosaurio parecido al velociraptor, con garras curvas","Triceratops":"Dinosaurio con tres cuernos en la cabeza","Estegosaurio":"Dinosaurio con placas puntiagudas en el lomo","Brontosaurio":"Dinosaurio enorme de cuello muy largo","Diplodocus":"Dinosaurio de cuello y cola muy largos","Pterodáctilo":"Reptil volador de la época de los dinosaurios","Pteranodon":"Reptil volador con una cresta ósea en la cabeza","Espinosaurio":"Dinosaurio con una gran vela de espinas en el lomo","T-Rex":"Dinosaurio carnívoro enorme con dientes afilados","Mamut":"Elefante prehistórico peludo con grandes colmillos","Mastodonte":"Animal prehistórico parecido al mamut","Tigre dientes de sable":"Felino prehistórico con colmillos muy largos","León de las cavernas":"Felino prehistórico similar al león actual","Anquilosaurio":"Dinosaurio acorazado con una cola en forma de maza","Fósil":"Resto antiguo de un ser vivo conservado en la roca","Ámbar con insecto":"Resina fósil que a veces conserva un insecto dentro","Coche de Fórmula 1":"Coche de carreras extremadamente rápido","Coche de rally":"Coche de carreras preparado para caminos difíciles","Ferrari":"Marca italiana de coches deportivos de lujo","Lamborghini":"Marca italiana de coches deportivos muy veloces","Globo aerostático":"Globo grande que vuela con aire caliente","Dirigible":"Nave voladora alargada, más lenta que un avión","Avión de caza":"Avión militar rápido preparado para el combate","Ambulancia":"Vehículo que traslada a personas heridas o enfermas","Coche de bomberos":"Vehículo rojo que va a apagar incendios","Excavadora":"Máquina con pala para excavar tierra","PlayStation":"Consola de videojuegos de Sony","Xbox":"Consola de videojuegos de Microsoft","Nintendo Switch":"Consola de videojuegos híbrida de Nintendo","Steam Deck":"Consola portátil para jugar juegos de PC","iPhone":"Teléfono móvil de la marca Apple","un móvil Android":"Teléfono móvil con el sistema operativo de Google","YouTube":"Plataforma para ver y subir vídeos","TikTok":"Red social de vídeos cortos muy popular","WhatsApp":"Aplicación de mensajería muy usada","Telegram":"Aplicación de mensajería con muchos grupos y canales","Netflix":"Plataforma de streaming de series y películas","Disney+":"Plataforma de streaming de Disney, Marvel y Star Wars","Google":"El buscador de internet más usado del mundo","Bing":"Buscador de internet de Microsoft","Instagram":"Red social de fotos y vídeos","Snapchat":"Red social de fotos que desaparecen","Tablet":"Dispositivo electrónico plano, más grande que un móvil","Mando de consola":"Se usa con las manos para controlar un videojuego","Teclado gamer":"Teclado con luces pensado para videojuegos","Dron":"Pequeño vehículo volador sin piloto a bordo","Rumi":"Cantante del grupo HUNTR/X en la película KPop Demon Hunters","Mira":"Cantante del grupo HUNTR/X en la película KPop Demon Hunters","HUNTR/X":"Grupo de K-pop protagonista que caza demonios en su película","los Saja Boys":"Grupo rival de demonios en la película KPop Demon Hunters","Jinu":"Líder del grupo rival de demonios, en KPop Demon Hunters","un miembro de HUNTR/X":"Integrante del grupo protagonista de KPop Demon Hunters","Labubu":"Muñeco elfo coleccionable con dientes puntiagudos, muy de moda","Sonny Angel":"Muñeco coleccionable pequeño con gorritos temáticos","Molly":"Muñeca coleccionable de la marca Pop Mart","Mikecrack":"Youtuber español de Minecraft muy popular entre niños","DaniRep":"Youtuber español de contenido gaming","TheGrefg":"Youtuber y streamer español muy conocido","Vegetta777":"Youtuber español pionero de vídeos de videojuegos","Ibai":"Streamer español muy popular, presenta eventos en directo","AuronPlay":"Streamer y youtuber español muy conocido","ElRubius":"Youtuber español muy popular en la última década","Willyrex":"Youtuber español de videojuegos, amigo de Vegetta777","Espaguetis":"Pasta larga y fina, típica de Italia","Macarrones":"Pasta corta con forma de tubo","Lasaña":"Plato italiano de capas de pasta, carne y queso al horno","Croissant":"Bollo de hojaldre con forma de media luna","Napolitana":"Bollo de hojaldre relleno de chocolate","Tortilla de patatas":"Plato español de huevo y patata, muy típico","Paella":"Plato de arroz típico de Valencia","Empanada gallega":"Masa relleno típica de Galicia","Pastel de carne":"Plato horneado relleno de carne","Pulpo á feira":"Plato gallego de pulpo cocido con pimentón","Mejillones":"Marisco con concha alargada de color oscuro","Churros":"Masa frita y alargada, se toma con chocolate","Porras":"Masa frita parecida al churro, más gruesa","Donut":"Bollo dulce con forma de anillo","Rosquilla":"Dulce con forma de anillo, hecho al horno","Sushi":"Plato japonés de arroz con pescado o algas","Ramen":"Sopa japonesa de fideos","Taco":"Tortilla mexicana rellena, doblada por la mitad","Burrito":"Tortilla mexicana enrollada con relleno","Cenicienta":"Joven que pierde un zapato de cristal en un baile real","Cohete":"Vehículo que se lanza al espacio con mucha potencia","Telescopio":"Instrumento para ver objetos lejanos, como estrellas","Cóndor":"Ave rapaz enorme de las montañas de Sudamérica","Auriculares":"Se ponen en las orejas para escuchar sonido"};
+
+// ============================================================
+// ESTADO
+// ============================================================
+const MIN_PLAYERS = 4;
+const MAX_PLAYERS = 20;
+const MIN_WIN_SCORE = 5;
+const MAX_WIN_SCORE = 30;
+const DEFAULT_WIN_SCORE = 13;
+
+let state = {
+  gameMode: null,       // 'master' | 'nomaster', elegido una vez al entrar
+  selectedCategories: [], // ids de categorías activas para esta partida
+  activePairs: [],      // pool de pares combinado de las categorías seleccionadas
+  playerCount: 8,
+  winScore: DEFAULT_WIN_SCORE, // puntuación objetivo para ganar el juego, configurable 5-30
+  names: [],           // nombres definitivos, índice = jugador (0-indexed)
+  roles: [],            // 'pueblo' | 'casi' | 'impostor', índice = jugador (0-indexed), fijo toda la partida
+  alive: [],            // boolean, índice = jugador (0-indexed)
+  scores: [],           // puntos acumulados totales, índice = jugador (0-indexed)
+  startCount: [],       // veces que cada jugador ha empezado una ronda, índice = jugador (0-indexed)
+  roundOrder: [],       // orden de jugadores (índices) para la ronda actual, ya empezando por el que abre
+  puebloWord: '',
+  casiWord: '',
+  usedPairs: [],
+  currentReveal: 0,     // índice dentro de state.roundOrder
+  passStepTarget: null, // en modo sin máster: siguiente jugador que debe recibir el móvil
+  gameWinnerIndex: null // si alguien llegó a la puntuación objetivo, se fija aquí
+};
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Reconstruye el pool de pares combinando todas las categorías marcadas.
+function buildActivePairs() {
+  const pairs = [];
+  CATEGORIES.forEach(cat => {
+    if (state.selectedCategories.includes(cat.id)) {
+      cat.pairs.forEach(p => pairs.push(p));
+    }
+  });
+  state.activePairs = pairs;
+  state.usedPairs = [];
+}
+
+function pickWordPair() {
+  const pool = state.activePairs;
+  if (state.usedPairs.length >= pool.length) state.usedPairs = [];
+  let idx;
+  do { idx = Math.floor(Math.random() * pool.length); } while (state.usedPairs.includes(idx));
+  state.usedPairs.push(idx);
+  return pool[idx];
+}
+
+// Número de Topos según el tramo de jugadores. Siempre exactamente 1 Espía;
+// los Topos escalan con el grupo para que los Agentes sigan siendo mayoría clara.
+function getCasiCount(n) {
+  if (n <= 6) return 1;
+  if (n <= 9) return 2;
+  if (n <= 12) return 3;
+  if (n <= 15) return 4;
+  if (n <= 18) return 5;
+  return 6; // 19-20
+}
+
+// Umbral de vivos en el que la partida se resuelve si el Espía no ha sido
+// cazado antes: Espía + Topos. Con grupos grandes hay más Topos, así que
+// la partida se cierra con menos eliminaciones necesarias — el Espía no
+// tiene que sobrevivir a "todos menos 2" solo por haber más jugadores.
+function getEndThreshold(n) {
+  return 1 + getCasiCount(n);
+}
+
+function assignRoles(n) {
+  const roles = new Array(n).fill('pueblo');
+  const positions = shuffle([...Array(n).keys()]);
+  const casiCount = getCasiCount(n);
+  roles[positions[0]] = 'impostor';
+  for (let i = 1; i <= casiCount; i++) {
+    roles[positions[i]] = 'casi';
+  }
+  return roles;
+}
+
+function aliveIndexes() {
+  const arr = [];
+  for (let i = 0; i < state.playerCount; i++) if (state.alive[i]) arr.push(i);
+  return arr;
+}
+
+// Calcula el orden de la ronda: círculo de vivos (1→2→3...→N→1) que
+// empieza en un jugador aleatorio distinto del Impostor, priorizando
+// a quien menos veces haya abierto ronda, para que vaya rotando.
+function computeRoundOrder() {
+  const alive = aliveIndexes();
+  const candidates = alive.filter(i => state.roles[i] !== 'impostor');
+  // si por lo que sea no hay candidatos válidos (no debería pasar salvo con 3 vivos
+  // y los otros dos ya eliminados, caso imposible aquí), usamos todos los vivos
+  const pool = candidates.length > 0 ? candidates : alive;
+
+  const minStarts = Math.min(...pool.map(i => state.startCount[i]));
+  const leastStarted = pool.filter(i => state.startCount[i] === minStarts);
+  const starter = leastStarted[Math.floor(Math.random() * leastStarted.length)];
+
+  state.startCount[starter]++;
+
+  const startPos = alive.indexOf(starter);
+  const order = alive.slice(startPos).concat(alive.slice(0, startPos));
+  return order;
+}
+
+function displayName(i) {
+  return state.names[i] && state.names[i].trim() ? state.names[i].trim() : `Jugador ${i + 1}`;
+}
+
+function roleLabel(role) {
+  return role === 'pueblo' ? 'Agente' : role === 'casi' ? 'Topo' : 'Espía';
+}
+
+// ============================================================
+// SCREENS
+// ============================================================
+const screens = {
+  cover: document.getElementById('screen-cover'),
+  help: document.getElementById('screen-help'),
+  mode: document.getElementById('screen-mode'),
+  setup: document.getElementById('screen-setup'),
+  categories: document.getElementById('screen-categories'),
+  names: document.getElementById('screen-names'),
+  reveal: document.getElementById('screen-reveal'),
+  pass: document.getElementById('screen-pass'),
+  eliminate: document.getElementById('screen-eliminate'),
+  guess: document.getElementById('screen-guess'),
+  result: document.getElementById('screen-result'),
+  victory: document.getElementById('screen-victory'),
+  credits: document.getElementById('screen-credits'),
+};
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+}
+
+// ---------- Cover screen ----------
+document.getElementById('btn-cover-play').addEventListener('click', () => {
+  showScreen('mode');
+});
+document.getElementById('btn-cover-help').addEventListener('click', () => {
+  showScreen('help');
+});
+
+// ---------- Help screen ----------
+document.getElementById('btn-help-back').addEventListener('click', () => {
+  showScreen('cover');
+});
+
+// ---------- Mode screen ----------
+document.getElementById('mode-master').addEventListener('click', () => {
+  state.gameMode = 'master';
+  showScreen('setup');
+});
+document.getElementById('mode-nomaster').addEventListener('click', () => {
+  state.gameMode = 'nomaster';
+  showScreen('setup');
+});
+document.getElementById('btn-back-cover').addEventListener('click', () => {
+  showScreen('cover');
+});
+
+// ============================================================
+// SETUP SCREEN
+// ============================================================
+const elPlayerCount = document.getElementById('player-count');
+const elRolePreview = document.getElementById('role-preview');
+const elMinWarning = document.getElementById('min-warning');
+const elBtnGotoCategories = document.getElementById('btn-goto-categories');
+
+function renderSetup() {
+  elPlayerCount.textContent = state.playerCount;
+  const casiCount = getCasiCount(state.playerCount);
+  const pueblo = state.playerCount - 1 - casiCount;
+  elRolePreview.innerHTML = `
+    <span><span class="dot pueblo"></span>${pueblo} Agentes</span>
+    <span><span class="dot casi"></span>${casiCount} Topo${casiCount > 1 ? 's' : ''}</span>
+    <span><span class="dot impostor"></span>1 Espía</span>
+  `;
+  if (state.playerCount < MIN_PLAYERS) {
+    elMinWarning.textContent = `Mínimo ${MIN_PLAYERS} jugadores`;
+    elBtnGotoCategories.disabled = true;
+  } else {
+    elMinWarning.textContent = '';
+    elBtnGotoCategories.disabled = false;
+  }
+  renderWinScore();
+}
+
+document.getElementById('btn-minus').addEventListener('click', () => {
+  if (state.playerCount > 3) state.playerCount--;
+  renderSetup();
+});
+document.getElementById('btn-plus').addEventListener('click', () => {
+  if (state.playerCount < MAX_PLAYERS) state.playerCount++;
+  renderSetup();
+});
+
+const elWinScoreCount = document.getElementById('win-score-count');
+const elScoreWarning = document.getElementById('score-warning');
+
+function renderWinScore() {
+  elWinScoreCount.textContent = state.winScore;
+  elScoreWarning.textContent = '';
+}
+
+document.getElementById('btn-score-minus').addEventListener('click', () => {
+  if (state.winScore > MIN_WIN_SCORE) state.winScore--;
+  renderWinScore();
+});
+document.getElementById('btn-score-plus').addEventListener('click', () => {
+  if (state.winScore < MAX_WIN_SCORE) state.winScore++;
+  renderWinScore();
+});
+
+elBtnGotoCategories.addEventListener('click', () => {
+  renderCategories();
+  showScreen('categories');
+});
+
+document.getElementById('btn-back-mode').addEventListener('click', () => {
+  showScreen('mode');
+});
+
+// ============================================================
+// CATEGORIES SCREEN
+// ============================================================
+const elCatList = document.getElementById('cat-list');
+const elCatWarning = document.getElementById('cat-warning');
+const elBtnGotoNames = document.getElementById('btn-goto-names');
+
+function renderCategories() {
+  elCatList.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const checked = state.selectedCategories.includes(cat.id);
+    const row = document.createElement('div');
+    row.className = 'cat-row' + (checked ? ' checked' : '');
+    row.dataset.catId = cat.id;
+    row.innerHTML = `
+      <div class="cat-checkbox">${checked ? '✓' : ''}</div>
+      <div class="cat-label">${cat.label}</div>
+      <div class="cat-count">${cat.pairs.length}</div>
+    `;
+    row.addEventListener('click', () => toggleCategory(cat.id));
+    elCatList.appendChild(row);
+  });
+  updateCatWarning();
+}
+
+function toggleCategory(id) {
+  const idx = state.selectedCategories.indexOf(id);
+  if (idx >= 0) {
+    state.selectedCategories.splice(idx, 1);
+  } else {
+    state.selectedCategories.push(id);
+  }
+  renderCategories();
+}
+
+function updateCatWarning() {
+  if (state.selectedCategories.length === 0) {
+    elCatWarning.textContent = 'Selecciona al menos una temática';
+    elBtnGotoNames.disabled = true;
+  } else {
+    elCatWarning.textContent = '';
+    elBtnGotoNames.disabled = false;
+  }
+}
+
+document.getElementById('btn-cat-all').addEventListener('click', () => {
+  state.selectedCategories = CATEGORIES.map(c => c.id);
+  renderCategories();
+});
+document.getElementById('btn-cat-none').addEventListener('click', () => {
+  state.selectedCategories = [];
+  renderCategories();
+});
+document.getElementById('btn-back-setup-from-cat').addEventListener('click', () => {
+  showScreen('setup');
+});
+
+elBtnGotoNames.addEventListener('click', () => {
+  if (state.selectedCategories.length === 0) return;
+  buildActivePairs();
+  // reset de nombres a placeholders para el número actual
+  state.names = new Array(state.playerCount).fill('');
+  renderNames();
+  showScreen('names');
+});
+
+// ============================================================
+// NAMES SCREEN
+// ============================================================
+const elNamesList = document.getElementById('names-list');
+
+function renderNames() {
+  elNamesList.innerHTML = '';
+  for (let i = 0; i < state.playerCount; i++) {
+    const row = document.createElement('div');
+    row.className = 'name-row';
+    row.innerHTML = `
+      <div class="name-num">${i + 1}</div>
+      <input class="name-input" type="text" placeholder="Jugador ${i + 1}" maxlength="18" data-idx="${i}">
+    `;
+    elNamesList.appendChild(row);
+  }
+  elNamesList.querySelectorAll('.name-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      state.names[idx] = e.target.value;
+    });
+  });
+}
+
+document.getElementById('btn-back-setup').addEventListener('click', () => {
+  showScreen('setup');
+});
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  // nueva partida completa: roles nuevos, marcador a cero
+  state.scores = new Array(state.playerCount).fill(0);
+  state.gameWinnerIndex = null;
+  startNewMatch();
+});
+
+// ============================================================
+// MATCH FLOW
+// ============================================================
+function startNewMatch() {
+  state.roles = assignRoles(state.playerCount);
+  state.alive = new Array(state.playerCount).fill(true);
+  state.startCount = new Array(state.playerCount).fill(0);
+  startWordRound();
+}
+
+function startWordRound() {
+  const pair = pickWordPair();
+  state.puebloWord = pair[0];
+  state.casiWord = pair[1];
+  state.currentReveal = 0;
+  state.roundOrder = computeRoundOrder();
+  if (state.gameMode === 'nomaster') {
+    showPassScreen();
+  } else {
+    showScreen('reveal');
+    renderReveal();
+  }
+}
+
+// ---------- Reveal screen ----------
+const elProgressTrack = document.getElementById('progress-track');
+const elPlayerTag = document.getElementById('player-tag');
+const elWordText = document.getElementById('word-text');
+const elHintBtn = document.getElementById('hint-btn');
+const elHintBox = document.getElementById('hint-box');
+let currentHintText = '';
+
+elHintBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isHidden = elHintBox.classList.contains('hidden');
+  if (isHidden) {
+    elHintBox.textContent = currentHintText;
+    elHintBox.classList.remove('hidden');
+  } else {
+    elHintBox.classList.add('hidden');
+  }
+});
+
+function renderProgressTrack() {
+  const order = state.roundOrder;
+  elProgressTrack.innerHTML = '';
+  order.forEach((_, pos) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    if (pos < state.currentReveal) dot.classList.add('done');
+    if (pos === state.currentReveal) dot.classList.add('current');
+    elProgressTrack.appendChild(dot);
+  });
+}
+
+function renderReveal() {
+  const playerIdx = state.roundOrder[state.currentReveal];
+  const role = state.roles[playerIdx];
+
+  elPlayerTag.textContent = displayName(playerIdx);
+
+  elWordText.style.animation = 'none';
+  requestAnimationFrame(() => { elWordText.style.animation = ''; });
+
+  if (role === 'pueblo') {
+    elWordText.textContent = state.puebloWord;
+    currentHintText = WORD_HINTS[state.puebloWord] || '';
+  } else if (role === 'casi') {
+    elWordText.textContent = state.casiWord;
+    currentHintText = WORD_HINTS[state.casiWord] || '';
+  } else {
+    elWordText.textContent = 'SIN PISTA';
+    currentHintText = 'No hay pista disponible.';
+  }
+
+  elHintBox.classList.add('hidden');
+  elHintBox.textContent = '';
+
+  renderProgressTrack();
+}
+
+screens.reveal.addEventListener('click', () => {
+  state.currentReveal++;
+  if (state.currentReveal >= state.roundOrder.length) {
+    showEliminationScreen();
+  } else if (state.gameMode === 'nomaster') {
+    showPassScreen();
+  } else {
+    renderReveal();
+  }
+});
+
+// ---------- Pass screen (traspaso protegido, solo modo sin máster) ----------
+const elPassName = document.getElementById('pass-name');
+
+function showPassScreen() {
+  const nextPlayerIdx = state.roundOrder[state.currentReveal];
+  elPassName.textContent = `Pasa el móvil a ${displayName(nextPlayerIdx)}`;
+  showScreen('pass');
+}
+
+screens.pass.addEventListener('click', () => {
+  showScreen('reveal');
+  renderReveal();
+});
+
+// ---------- Elimination screen ----------
+const elElimList = document.getElementById('elim-list');
+const elElimSubtitle = document.getElementById('elim-subtitle');
+
+function showEliminationScreen() {
+  const alive = aliveIndexes();
+  elElimSubtitle.textContent = `Quedan ${alive.length} jugadores en pie`;
+  elElimList.innerHTML = '';
+  alive.forEach(idx => {
+    const btn = document.createElement('button');
+    btn.className = 'elim-btn';
+    btn.innerHTML = `<span>${displayName(idx)}</span><span class="elim-arrow">eliminar →</span>`;
+    btn.addEventListener('click', () => handleElimination(idx));
+    elElimList.appendChild(btn);
+  });
+  showScreen('eliminate');
+}
+
+function handleElimination(idx) {
+  const role = state.roles[idx];
+  if (role === 'impostor') {
+    showGuessScreen(idx);
+    return;
+  }
+  // eliminado normal: Casi o Pueblo
+  state.alive[idx] = false;
+  const remaining = aliveIndexes();
+  if (remaining.length <= getEndThreshold(state.playerCount)) {
+    finishMatch({ eliminatedImpostor: false });
+  } else {
+    startWordRound();
+  }
+}
+
+// ---------- Guess screen (impostor cazado) ----------
+const elGuessName = document.getElementById('guess-name');
+const elGuessWordCard = document.getElementById('guess-word-card');
+let pendingImpostorIdx = null;
+
+function showGuessScreen(idx) {
+  pendingImpostorIdx = idx;
+  elGuessName.textContent = displayName(idx);
+  elGuessWordCard.textContent = state.puebloWord;
+  showScreen('guess');
+}
+
+document.getElementById('btn-guess-yes').addEventListener('click', () => {
+  finishMatch({ eliminatedImpostor: true, guessedRight: true, impostorIdx: pendingImpostorIdx });
+});
+document.getElementById('btn-guess-no').addEventListener('click', () => {
+  finishMatch({ eliminatedImpostor: true, guessedRight: false, impostorIdx: pendingImpostorIdx });
+});
+
+// ============================================================
+// FINISH MATCH -> compute points
+// ============================================================
+function finishMatch({ eliminatedImpostor, guessedRight, impostorIdx }) {
+  const gains = new Array(state.playerCount).fill(0);
+  let headline = '';
+
+  if (eliminatedImpostor) {
+    if (guessedRight) {
+      gains[impostorIdx] = 3;
+      headline = `${displayName(impostorIdx)} (Espía) adivinó la palabra`;
+    } else {
+      headline = `${displayName(impostorIdx)} (Espía) fue descubierto y falló`;
+      // Solo cobran los jugadores que seguían vivos en el momento de cazar al Impostor.
+      // Los eliminados en rondas anteriores de esta partida no reciben puntos.
+      for (let i = 0; i < state.playerCount; i++) {
+        if (i === impostorIdx) continue;
+        if (!state.alive[i]) continue;
+        gains[i] = state.roles[i] === 'casi' ? 2 : 1;
+      }
+    }
+    state.alive[impostorIdx] = false;
+  } else {
+    // se alcanzó el umbral de vivos (Espía+Topos) sin cazar al impostor -> gana el impostor
+    const impostorIdx2 = state.roles.indexOf('impostor');
+    gains[impostorIdx2] = 3;
+    headline = `${displayName(impostorIdx2)} (Espía) llegó vivo al final`;
+  }
+
+  for (let i = 0; i < state.playerCount; i++) {
+    state.scores[i] += gains[i];
+  }
+
+  // detectar ganador del juego (10 puntos)
+  let gameWinner = null;
+  for (let i = 0; i < state.playerCount; i++) {
+    if (state.scores[i] >= state.winScore) { gameWinner = i; break; }
+  }
+  state.gameWinnerIndex = gameWinner;
+
+  showResultScreen(headline, gains);
+}
+
+// ============================================================
+// RESULT SCREEN
+// ============================================================
+const elResultHeadline = document.getElementById('result-headline');
+const elPointsList = document.getElementById('points-list');
+const elBtnNextMatch = document.getElementById('btn-next-match');
+const elBtnFullReset = document.getElementById('btn-full-reset');
+
+function showResultScreen(headline, gains) {
+  elResultHeadline.textContent = headline;
+
+  elPointsList.innerHTML = '';
+  for (let i = 0; i < state.playerCount; i++) {
+    const gain = gains[i];
+    const row = document.createElement('div');
+    row.className = 'points-row';
+    row.innerHTML = `
+      <span class="pname">${displayName(i)} <span style="opacity:.4; font-size:11px; font-family:'Courier New',monospace; text-transform:uppercase;">${roleLabel(state.roles[i])}</span></span>
+      <span class="pgain ${gain === 0 ? 'zero' : ''}">${gain > 0 ? '+' + gain : '+0'}</span>
+      <span class="ptotal">${state.scores[i]}</span>
+    `;
+    elPointsList.appendChild(row);
+  }
+
+  if (state.gameWinnerIndex !== null) {
+    elBtnNextMatch.textContent = 'Continuar';
+    elBtnFullReset.classList.add('hidden');
+  } else {
+    elBtnNextMatch.textContent = 'Siguiente partida · mismo grupo';
+    elBtnFullReset.classList.remove('hidden');
+    elBtnFullReset.textContent = 'Nuevo grupo desde cero';
+  }
+
+  showScreen('result');
+}
+
+document.getElementById('btn-next-match').addEventListener('click', () => {
+  if (state.gameWinnerIndex !== null) {
+    showVictoryScreen();
+    return;
+  }
+  startNewMatch();
+});
+
+elBtnFullReset.addEventListener('click', () => {
+  state.playerCount = 8;
+  state.winScore = DEFAULT_WIN_SCORE;
+  state.names = [];
+  state.scores = [];
+  state.gameWinnerIndex = null;
+  state.gameMode = null;
+  state.selectedCategories = [];
+  renderSetup();
+  showScreen('mode');
+});
+
+// ============================================================
+// VICTORY SCREEN (fin del juego completo, pantalla propia)
+// ============================================================
+const elVictoryName = document.getElementById('victory-name');
+const elVictorySub = document.getElementById('victory-sub');
+
+function showVictoryScreen() {
+  elVictoryName.textContent = displayName(state.gameWinnerIndex);
+  elVictorySub.textContent = `ha alcanzado ${state.scores[state.gameWinnerIndex]} puntos y gana la partida`;
+  showScreen('victory');
+}
+
+screens.victory.addEventListener('click', () => {
+  showScreen('credits');
+});
+
+// ============================================================
+// CREDITS SCREEN
+// ============================================================
+document.getElementById('btn-credits-replay').addEventListener('click', () => {
+  // repite con el mismo grupo, nombres y categorías; reinicia solo el marcador
+  state.scores = new Array(state.playerCount).fill(0);
+  state.gameWinnerIndex = null;
+  startNewMatch();
+});
+
+document.getElementById('btn-credits-home').addEventListener('click', () => {
+  state.playerCount = 8;
+  state.winScore = DEFAULT_WIN_SCORE;
+  state.names = [];
+  state.scores = [];
+  state.gameWinnerIndex = null;
+  state.gameMode = null;
+  state.selectedCategories = [];
+  renderSetup();
+  showScreen('cover');
+});
+
+// ============================================================
+// INIT
+// ============================================================
+renderSetup();
+showScreen('cover');
+
+// Registro del service worker para instalación como app y uso sin conexión.
+// Si falla (por ejemplo al abrir el HTML directamente sin servidor), el
+// juego sigue funcionando igual, solo sin la parte de instalación offline.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
